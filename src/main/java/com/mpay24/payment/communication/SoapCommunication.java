@@ -17,6 +17,7 @@ import javax.xml.ws.Holder;
 import org.apache.cxf.configuration.jsse.TLSClientParameters;
 import org.apache.cxf.endpoint.Client;
 import org.apache.cxf.frontend.ClientProxy;
+import org.apache.cxf.interceptor.LoggingInInterceptor;
 import org.apache.cxf.interceptor.LoggingOutInterceptor;
 import org.apache.cxf.transport.http.HTTPConduit;
 import org.apache.log4j.Logger;
@@ -488,6 +489,7 @@ public class SoapCommunication {
 	private Client getSoapClient(ETP etp) {
 		Client cxfClient = ClientProxy.getClient(etp);
 		cxfClient.getOutInterceptors().add(new LoggingOutInterceptor());
+		cxfClient.getInInterceptors().add(new LoggingInInterceptor());
 		return cxfClient;
 	}
 
