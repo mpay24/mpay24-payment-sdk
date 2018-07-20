@@ -117,11 +117,11 @@ public class SdkApiObjectMapper {
 		return paymentData;
 	}
 
-	public Payment mapPaymentSystemData(PaymentRequest paymentRequest, PaymentTypeData paymentType, boolean isAuthorizatio) {
+	public Payment mapPaymentSystemData(PaymentRequest paymentRequest, PaymentTypeData paymentType, Boolean isAuthorization) {
 		if (paymentType instanceof DirectDebitPaymentType) {
 			return mapPaymentSystemData(paymentRequest, (DirectDebitPaymentType) paymentType);
 		} else if (paymentType instanceof CreditCardPaymentType) {
-			return mapPaymentSystemData(paymentRequest, (CreditCardPaymentType) paymentType, isAuthorizatio);
+			return mapPaymentSystemData(paymentRequest, (CreditCardPaymentType) paymentType, isAuthorization);
 		} else if (paymentType instanceof DebitCardPaymentType) {
 			return mapPaymentSystemData(paymentRequest, (DebitCardPaymentType) paymentType);
 		} else if (paymentType instanceof InvoicePaymentType) {
@@ -194,7 +194,7 @@ public class SdkApiObjectMapper {
 		return convertedAmount.doubleValue();
 	}
 
-	private Payment mapPaymentSystemData(PaymentRequest paymentRequest, CreditCardPaymentType paymentTypeData, boolean isAuthorizatio) {
+	private Payment mapPaymentSystemData(PaymentRequest paymentRequest, CreditCardPaymentType paymentTypeData, Boolean isAuthorization) {
 		PaymentCC payment = new PaymentCC();
 		payment.setAmount(convertBigDecimalToInteger(paymentRequest.getAmount()));
 		payment.setCurrency(paymentRequest.getCurrency());
@@ -207,7 +207,7 @@ public class SdkApiObjectMapper {
 		payment.setIdentifier(paymentTypeData.getPan());
 		payment.setUseProfile(paymentRequest.isSavePaymentData());
 		payment.setProfileID(paymentRequest.getStoredPaymentDataId());
-		payment.setManualClearing(isAuthorizatio);
+		payment.setManualClearing(isAuthorization);
 		return payment;
 	}
 

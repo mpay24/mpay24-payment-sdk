@@ -110,12 +110,12 @@ public class Mpay24 {
 		return payment(paymentRequest, paymentTypeData, null, isAuthorizatio);
 	}
 	public Payment payment(PaymentRequest paymentRequest, PaymentTypeData paymentTypeData, Customer customer) throws PaymentException {
-		return payment(paymentRequest, paymentTypeData, customer, null, false);
+		return payment(paymentRequest, paymentTypeData, customer, null, (Boolean)null);
 	}
 	public Payment payment(PaymentRequest paymentRequest, PaymentTypeData paymentTypeData, Customer customer, boolean isAuthorization) throws PaymentException {
 		return payment(paymentRequest, paymentTypeData, customer, null, isAuthorization);
 	}
-	public Payment payment(PaymentRequest paymentRequest, PaymentTypeData paymentTypeData, Customer customer, ShoppingCart shoppingCart, boolean isAuthorization) throws PaymentException {
+	public Payment payment(PaymentRequest paymentRequest, PaymentTypeData paymentTypeData, Customer customer, ShoppingCart shoppingCart, Boolean isAuthorization) throws PaymentException {
 		com.mpay.soap.client.Payment payment = mapper.mapPaymentSystemData(paymentRequest, paymentTypeData, isAuthorization);
 		Order order = mapper.mapOrder(paymentRequest, customer, shoppingCart);
 

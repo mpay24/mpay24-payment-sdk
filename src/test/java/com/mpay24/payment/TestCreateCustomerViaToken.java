@@ -23,6 +23,7 @@ public class TestCreateCustomerViaToken extends AbstractSeleniumTestcase {
 
 	@After
 	public void tearDown() throws Exception {
+		closeFirefox();
 	}
 
 	@Test
