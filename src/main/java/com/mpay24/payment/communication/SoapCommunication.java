@@ -430,6 +430,8 @@ public class SoapCommunication {
 				payment.getCustomer().setEmail(param.getValue());
 			} else if ("CUSTOMER_ID".equalsIgnoreCase(param.getName())) {
 				payment.getCustomer().setCustomerId(param.getValue());
+			} else if ("PROFILE_STATUS".equalsIgnoreCase(param.getName())) {
+				payment.setProfileStatus(param.getValue());
 			}
 			logger.debug("name: '" + param.getName() + "', value: '" + param.getValue() + "'");
 		}
