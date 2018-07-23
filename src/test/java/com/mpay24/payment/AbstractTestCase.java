@@ -51,7 +51,7 @@ public abstract class AbstractTestCase {
 	protected String getPassword() {
 		String password = System.getProperty("mpay24.merchant.password");
 		if (password == null) {
-			password = "FwD11b&w22";
+			password = "03101974";
 		}
 		return password;
 	}
