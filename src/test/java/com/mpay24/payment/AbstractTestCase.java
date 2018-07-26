@@ -225,7 +225,7 @@ public abstract class AbstractTestCase {
 		CreditCardPaymentType paymentType = new CreditCardPaymentType();
 		paymentType.setPan("4444333322221111");
 		paymentType.setCvc("123");
-		paymentType.setExpiry(getCreditCardMonthYearDate("12/2016"));
+		paymentType.setExpiry(getCreditCardMonthYearDate("12/2018"));
 		paymentType.setBrand(com.mpay24.payment.type.CreditCardPaymentType.Brand.VISA);
 		return paymentType;
 	}

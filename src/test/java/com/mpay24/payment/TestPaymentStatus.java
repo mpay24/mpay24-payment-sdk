@@ -1,7 +1,7 @@
 package com.mpay24.payment;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 
 import java.math.BigDecimal;
 import java.text.ParseException;
@@ -66,6 +66,19 @@ public class TestPaymentStatus extends AbstractTestCase {
 
 	}
 
+	@Test
+	public void testPaymentStatusError() throws ParseException {
+		try {
+			String tid = getRandomTransactionId();
+			mpay24.paymentPage(getTestPaymentRequest(tid, 1l));
+			mpay24.paymentDetails(tid);
+			fail();
+		} catch (PaymentException e) {
+			assertEquals("ERROR", e.getStatus().toString());
+			assertEquals("NOT_FOUND", e.getErrorCode());
+		}
+	}
+	
 	private String getRandomTransactionId() {
 		return String.valueOf(new Random().nextInt(10000000));
 	}
