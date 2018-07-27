@@ -73,6 +73,23 @@ public class TestPayment extends AbstractTestCase {
 	}
 
 	@Test
+	@Ignore
+	public void testDirectDebitHeidelpayPayment() throws PaymentException {
+		Payment response = mpay24.payment(getTestPaymentRequest("987654321", 1l), getDirectDebitTestData(Brand.HEIDELPAY));
+
+		assertEquals("OK", response.getReturnCode());
+		assertNotNull(response.getmPayTid());
+	}
+
+	@Test
+	public void testDirectDebitELVPayment() throws PaymentException {
+		Payment response = mpay24.payment(getTestPaymentRequest("987654321", 1l), getDirectDebitTestData(Brand.ELV));
+
+		assertEquals("OK", response.getReturnCode());
+		assertNotNull(response.getmPayTid());
+	}
+
+	@Test
 	public void testVisaPayment() throws ParseException, PaymentException {
 		Payment response = mpay24.payment(getTestPaymentRequest(), getVisaTestData());
 
