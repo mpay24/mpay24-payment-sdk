@@ -38,10 +38,13 @@ import com.mpay.mdxi.Profile.URL;
 import com.mpay24.payment.data.Address;
 import com.mpay24.payment.data.Customer;
 import com.mpay24.payment.data.Customer.Gender;
+import com.mpay24.payment.data.PageStyle;
 import com.mpay24.payment.data.PaymentRequest;
 import com.mpay24.payment.data.PaymentType;
 import com.mpay24.payment.data.ShoppingCart;
+import com.mpay24.payment.data.ShoppingCartHeaders;
 import com.mpay24.payment.data.ShoppingCartItem;
+import com.mpay24.payment.data.ShoppingCartStyle;
 import com.mpay24.payment.data.StylingOptions;
 
 public class SdkMdxiMapper {
@@ -55,9 +58,9 @@ public class SdkMdxiMapper {
 			order.setURL(getOrderUrl(paymentRequest));
 			order.setPrice(getPrice(paymentRequest));
 			order.setCurrency(getCurrency(paymentRequest.getCurrency()));
-			order.setTid(paymentRequest.getTransactionID());
 			order.setUserField(paymentRequest.getUserField());
 			order.setTemplateSet(getTemplateSet(paymentRequest, stylingOptions));
+			addPageStyle(order, paymentRequest);
 			constructShoppingCart(shoppingCart, order);
 			order.setPaymentTypes(getPaymentTypes(paymentRequest));
 			constructCustomerData(paymentRequest, customer, order);
@@ -201,7 +204,24 @@ public class SdkMdxiMapper {
 		order.setTid(paymentsRequest.getTransactionID());
 		return order;
 	}
-
+	private void addPageStyle(com.mpay.mdxi.Order order, PaymentRequest paymentRequest) {
+		if(paymentRequest.getPageStyle() != null) {
+			PageStyle style = paymentRequest.getPageStyle();
+			order.setStyle(style.getStyle());
+			order.setPageStyle(style.getPageStyle());
+			order.setFooterStyle(style.getFooterStyle());
+			order.setInputFieldsStyle(style.getInputFieldsStyle());
+			order.setLogoStyle(style.getLogoStyle());
+			order.setErrorsStyle(style.getErrorsStyle());
+			order.setPageCaptionStyle(style.getCaptionStyle());
+			order.setPageHeaderStyle(style.getHeaderStyle());
+			order.setButtonsStyle(style.getButtonsStyle());
+			order.setSuccessTitleStyle(style.getSuccessTitleStyle());
+			order.setErrorsHeaderStyle(style.getErrorsHeaderStyle());
+			order.setErrorsStyle(style.getErrorsStyle());
+			order.setErrorTitleStyle(style.getErrorTitleStyle());
+		}
+	}
 	private com.mpay.mdxi.Order.URL getOrderUrl(PaymentRequest paymentsRequest) {
 		com.mpay.mdxi.Order.URL url = new com.mpay.mdxi.Order.URL();
 		url.setSuccess(paymentsRequest.getSuccessUrl());
@@ -221,6 +241,11 @@ public class SdkMdxiMapper {
 	private com.mpay.mdxi.Order.Price getPrice(PaymentRequest paymentsRequest) {
 		com.mpay.mdxi.Order.Price price = new com.mpay.mdxi.Order.Price();
 		price.setValue(paymentsRequest.getAmount().floatValue());
+		price.setHeader(paymentsRequest.getPriceHeader());
+		if(paymentsRequest.getPageStyle() != null) {
+			price.setHeaderStyle(paymentsRequest.getPageStyle().getPriceHeaderStyle());
+			price.setStyle(paymentsRequest.getPageStyle().getPriceStyle());
+		}
 		return price;
 	}
 
@@ -302,6 +327,8 @@ public class SdkMdxiMapper {
 			return null;
 		com.mpay.mdxi.Order.ShoppingCart mdxi = new com.mpay.mdxi.Order.ShoppingCart();
 		mdxi.setDescription(shoppingCart.getDescription());
+		addShoppingCartStyle(mdxi, shoppingCart);
+		addShoppingCartHeaders(mdxi, shoppingCart);
 		addDiscount(shoppingCart, mdxi);
 		addShippingCost(shoppingCart, mdxi);
 		addSubTotal(shoppingCart, mdxi);
@@ -309,68 +336,114 @@ public class SdkMdxiMapper {
 		addShoppingItems(shoppingCart, mdxi);
 		return mdxi;
 	}
-
+	private void addShoppingCartStyle(com.mpay.mdxi.Order.ShoppingCart mdxi, ShoppingCart shoppingCart) {
+		if(shoppingCart.getCartStyle() != null) {
+			ShoppingCartStyle style = shoppingCart.getCartStyle();
+			mdxi.setStyle(style.getStyle());
+			mdxi.setCaptionStyle(style.getCaptionStyle());
+			mdxi.setDescriptionStyle(style.getDescriptionStyle());
+			mdxi.setHeaderStyle(style.getHeaderStyle());
+			mdxi.setItemPriceStyle(style.getItemPriceStyle());
+			mdxi.setNumberStyle(style.getNumberStyle());
+			mdxi.setPackageStyle(style.getPackageStyle());
+			mdxi.setPriceStyle(style.getPriceStyle());
+			mdxi.setProductNrStyle(style.getProductNrStyle());
+			mdxi.setQuantityStyle(style.getQuantityStyle());
+		}
+	}
+	private void addShoppingCartHeaders(com.mpay.mdxi.Order.ShoppingCart mdxi, ShoppingCart shoppingCart) {
+		if(shoppingCart.getCartHeaders() != null) {
+			ShoppingCartHeaders header = shoppingCart.getCartHeaders();
+			mdxi.setHeader(header.getHeader());
+			mdxi.setDescriptionHeader(header.getDescriptionHeader());
+			mdxi.setItemPriceHeader(header.getItemPriceHeader());
+			mdxi.setNumberHeader(header.getNumberHeader());
+			mdxi.setPackageHeader(header.getPackageHeader());
+			mdxi.setPriceHeader(header.getPriceHeader());
+			mdxi.setProductNrHeader(header.getProductNrHeader());
+			mdxi.setQuantityHeader(header.getQuantityHeader());
+		}
+	}
+	
 	private void addShoppingItems(ShoppingCart shoppingCart, com.mpay.mdxi.Order.ShoppingCart mdxi) {
 		if (shoppingCart.getItemList() == null)
 			return;
 		List<Item> itemList = mdxi.getItem();
 		for (ShoppingCartItem shoppingCartItem : shoppingCart.getItemList()) {
 			com.mpay.mdxi.Order.ShoppingCart.Item item = new com.mpay.mdxi.Order.ShoppingCart.Item();
-			item.setDescription(getDescription(shoppingCartItem.getDescription()));
-			item.setItemPrice(getItemPrice(shoppingCartItem.getItemAmount()));
-			item.setNumber(getNumber(shoppingCartItem.getSequenceId()));
-			item.setPrice(getPrice(shoppingCartItem.getAmount()));
-			item.setProductNr(getProductNumber(shoppingCartItem.getProductCode()));
-			item.setQuantity(getQuantity(shoppingCartItem.getQuantity()));
+			item.setDescription(getDescription(shoppingCartItem));
+			item.setItemPrice(getItemPrice(shoppingCartItem));
+			item.setNumber(getNumber(shoppingCartItem));
+			item.setPrice(getPrice(shoppingCartItem));
+			item.setProductNr(getProductNumber(shoppingCartItem));
+			item.setQuantity(getQuantity(shoppingCartItem));
 			itemList.add(item);
 		}
 	}
 
-	private Quantity getQuantity(Long quantity) {
-		if (quantity == null)
+	private Quantity getQuantity(ShoppingCartItem shoppingCartItem) {
+		if (shoppingCartItem.getQuantity() == null)
 			return null;
 		com.mpay.mdxi.Order.ShoppingCart.Item.Quantity q = new com.mpay.mdxi.Order.ShoppingCart.Item.Quantity();
-		q.setValue(quantity);
+		q.setValue(shoppingCartItem.getQuantity());
+		if(shoppingCartItem.getItemStyle() != null) {
+			q.setStyle(shoppingCartItem.getItemStyle().getQuantityStyle());
+		}
 		return q;
 	}
 
-	private ProductNr getProductNumber(String productCode) {
-		if (productCode == null)
+	private ProductNr getProductNumber(ShoppingCartItem shoppingCartItem) {
+		if (shoppingCartItem.getProductCode() == null)
 			return null;
 		com.mpay.mdxi.Order.ShoppingCart.Item.ProductNr productNumber = new com.mpay.mdxi.Order.ShoppingCart.Item.ProductNr();
-		productNumber.setValue(productCode);
+		productNumber.setValue(shoppingCartItem.getProductCode());
+		if(shoppingCartItem.getItemStyle() != null) {
+			productNumber.setStyle(shoppingCartItem.getItemStyle().getProductNrStyle());
+		}
 		return productNumber;
 	}
 
-	private Price getPrice(BigDecimal price) {
-		if (price == null)
+	private Price getPrice(ShoppingCartItem shoppingCartItem) {
+		if (shoppingCartItem.getAmount() == null)
 			return null;
 		com.mpay.mdxi.Order.ShoppingCart.Item.Price p = new com.mpay.mdxi.Order.ShoppingCart.Item.Price();
-		p.setValue(price.floatValue());
+		p.setValue(shoppingCartItem.getAmount().floatValue());
+		if(shoppingCartItem.getItemStyle() != null) {
+			p.setStyle(shoppingCartItem.getItemStyle().getPriceStyle());
+		}
 		return p;
 	}
 
-	private Number getNumber(String sequenceId) {
-		if (sequenceId == null)
+	private Number getNumber(ShoppingCartItem shoppingCartItem) {
+		if (shoppingCartItem.getSequenceId() == null)
 			return null;
 		com.mpay.mdxi.Order.ShoppingCart.Item.Number number = new com.mpay.mdxi.Order.ShoppingCart.Item.Number();
-		number.setValue(sequenceId);
+		number.setValue(shoppingCartItem.getSequenceId());
+		if(shoppingCartItem.getItemStyle() != null) {
+			number.setStyle(shoppingCartItem.getItemStyle().getNumberStyle());
+		}
 		return number;
 	}
 
-	private ItemPrice getItemPrice(BigDecimal itemPrice) {
-		if (itemPrice == null)
+	private ItemPrice getItemPrice(ShoppingCartItem shoppingCartItem) {
+		if (shoppingCartItem.getItemAmount() == null)
 			return null;
 		com.mpay.mdxi.Order.ShoppingCart.Item.ItemPrice price = new com.mpay.mdxi.Order.ShoppingCart.Item.ItemPrice();
-		price.setValue(itemPrice.floatValue());
+		price.setValue(shoppingCartItem.getItemAmount().floatValue());
+		if(shoppingCartItem.getItemStyle() != null) {
+			price.setStyle(shoppingCartItem.getItemStyle().getItemPriceStyle());
+		}
 		return price;
 	}
 
-	private Description getDescription(String description) {
-		if (description == null)
+	private Description getDescription(ShoppingCartItem shoppingCartItem) {
+		if (shoppingCartItem.getDescription() == null)
 			return null;
 		com.mpay.mdxi.Order.ShoppingCart.Item.Description desc = new com.mpay.mdxi.Order.ShoppingCart.Item.Description();
-		desc.setValue(description);
+		desc.setValue(shoppingCartItem.getDescription());
+		if(shoppingCartItem.getItemStyle() != null) {
+			desc.setStyle(shoppingCartItem.getItemStyle().getDescriptionStyle());
+		}
 		return desc;
 	}
 
@@ -378,6 +451,11 @@ public class SdkMdxiMapper {
 		if (shoppingCart.getDiscount() != null) {
 			com.mpay.mdxi.Order.ShoppingCart.Discount discount = new com.mpay.mdxi.Order.ShoppingCart.Discount();
 			discount.setValue(shoppingCart.getDiscount().floatValue());
+			if(shoppingCart.getCartHeaders() != null) discount.setHeader(shoppingCart.getCartHeaders().getDiscountHeader());
+			if(shoppingCart.getCartStyle() != null) {
+				discount.setHeaderStyle(shoppingCart.getCartStyle().getDiscountHeaderStyle());
+				discount.setStyle(shoppingCart.getCartStyle().getDiscountStyle());
+			}
 			mdxi.getSubTotalOrDiscountOrShippingCosts().add(discount);
 		}
 	}
@@ -389,6 +467,11 @@ public class SdkMdxiMapper {
 			if (shoppingCart.getShippingCostTax() != null) {
 				shippingCosts.setTax(shoppingCart.getShippingCostTax().floatValue());
 			}
+			if(shoppingCart.getCartHeaders() != null) shippingCosts.setHeader(shoppingCart.getCartHeaders().getShippingCostsHeader());
+			if(shoppingCart.getCartStyle() != null) {
+				shippingCosts.setHeaderStyle(shoppingCart.getCartStyle().getShippingCostsHeaderStyle());
+				shippingCosts.setStyle(shoppingCart.getCartStyle().getShippingCostsStyle());
+			}
 			mdxi.getSubTotalOrDiscountOrShippingCosts().add(shippingCosts);
 		}
 	}
@@ -397,6 +480,11 @@ public class SdkMdxiMapper {
 		if (shoppingCart.getSubTotal() != null) {
 			com.mpay.mdxi.Order.ShoppingCart.SubTotal subTotal = new com.mpay.mdxi.Order.ShoppingCart.SubTotal();
 			subTotal.setValue(shoppingCart.getSubTotal().floatValue());
+			if(shoppingCart.getCartHeaders() != null) subTotal.setHeader(shoppingCart.getCartHeaders().getSubTotalHeader());
+			if(shoppingCart.getCartStyle() != null) {
+				subTotal.setHeaderStyle(shoppingCart.getCartStyle().getSubTotalHeaderStyle());
+				subTotal.setStyle(shoppingCart.getCartStyle().getSubTotalStyle());
+			}
 			mdxi.getSubTotalOrDiscountOrShippingCosts().add(subTotal);
 		}
 	}
@@ -406,6 +494,11 @@ public class SdkMdxiMapper {
 			com.mpay.mdxi.Order.ShoppingCart.Tax tax = new com.mpay.mdxi.Order.ShoppingCart.Tax();
 			tax.setValue(shoppingCart.getTax().floatValue());
 			tax.setPercent(shoppingCart.getTaxPercentage().floatValue());
+			if(shoppingCart.getCartHeaders() != null) tax.setHeader(shoppingCart.getCartHeaders().getTaxHeader());
+			if(shoppingCart.getCartStyle() != null) {
+				tax.setHeaderStyle(shoppingCart.getCartStyle().getTaxHeaderStyle());
+				tax.setStyle(shoppingCart.getCartStyle().getTaxStyle());
+			}
 			mdxi.getSubTotalOrDiscountOrShippingCosts().add(tax);
 		}
 	}

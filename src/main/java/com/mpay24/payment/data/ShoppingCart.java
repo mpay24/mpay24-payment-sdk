@@ -13,7 +13,8 @@ public class ShoppingCart {
 	private BigDecimal subTotal;
 	private BigDecimal shippingCost;
 	private BigDecimal shippingCostTax;
-	
+	private ShoppingCartStyle cartStyle;
+	private ShoppingCartHeaders cartHeaders;
 	
 	public List<ShoppingCartItem> getItemList() {
 		return itemList;
@@ -66,5 +67,17 @@ public class ShoppingCart {
 	}
 	public void setShippingCostTax(BigDecimal shippingCostTax) {
 		this.shippingCostTax = shippingCostTax;
+	}
+	public ShoppingCartStyle getCartStyle() {
+		return cartStyle;
+	}
+	public void setCartStyle(ShoppingCartStyle cartStyle) {
+		this.cartStyle = cartStyle;
+	}
+	public ShoppingCartHeaders getCartHeaders() {
+		return cartHeaders;
+	}
+	public void setCartHeaders(ShoppingCartHeaders cartHeaders) {
+		this.cartHeaders = cartHeaders;
 	}
 }

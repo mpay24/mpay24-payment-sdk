@@ -10,6 +10,7 @@ public class ShoppingCartItem {
 	private BigDecimal itemAmount;
 	private BigDecimal amount;
 	private BigDecimal tax;
+	private ItemStyle itemStyle;
 	
 	public String getProductCode() {
 		return productCode;
@@ -52,5 +53,11 @@ public class ShoppingCartItem {
 	}
 	public void setTax(BigDecimal tax) {
 		this.tax = tax;
+	}
+	public ItemStyle getItemStyle() {
+		return itemStyle;
+	}
+	public void setItemStyle(ItemStyle itemStyle) {
+		this.itemStyle = itemStyle;
 	}
 }

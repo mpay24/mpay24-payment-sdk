@@ -49,6 +49,8 @@ public class PaymentRequest {
 	private Language language;
 	private boolean savePaymentData = false;
 	private String storedPaymentDataId;
+	private String priceHeader;
+	private PageStyle pageStyle;
 
 	private List<PaymentType> paymentTypeInclusionList = new ArrayList<PaymentType>();
 	private boolean enableForRestrictions = true;
@@ -181,6 +183,22 @@ public class PaymentRequest {
 
 	public void setEnableForRestrictions(boolean enableForRestrictions) {
 		this.enableForRestrictions = enableForRestrictions;
+	}
+
+	public String getPriceHeader() {
+		return priceHeader;
+	}
+
+	public void setPriceHeader(String priceHeader) {
+		this.priceHeader = priceHeader;
+	}
+
+	public PageStyle getPageStyle() {
+		return pageStyle;
+	}
+
+	public void setPageStyle(PageStyle pageStyle) {
+		this.pageStyle = pageStyle;
 	}
 
 }
