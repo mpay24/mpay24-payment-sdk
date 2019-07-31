@@ -4,6 +4,7 @@ import static org.junit.Assert.*;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
@@ -27,6 +28,7 @@ public class TestCreateCustomerViaToken extends AbstractSeleniumTestcase {
 	}
 
 	@Test
+	@Ignore
 	public void testCreateCustomerViaToken() throws PaymentException {
 		String customerId = "12345678987633";
 		deleteProfileForTest(customerId);

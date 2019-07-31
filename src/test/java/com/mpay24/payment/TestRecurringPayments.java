@@ -68,6 +68,7 @@ public class TestRecurringPayments extends AbstractSeleniumTestcase {
 	}
 
 	@Test
+	@Ignore
 	public void testStorePaymentDataViaPaymentPanel() throws ParseException, PaymentException {
 		String customerId = "max.mustermann@gmail.com";
 		

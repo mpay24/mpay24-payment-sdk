@@ -8,6 +8,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.apache.log4j.Logger;
 import org.junit.After;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
@@ -28,8 +29,8 @@ public class TestToken extends AbstractSeleniumTestcase {
 		closeFirefox();
 	}
 
-
 	@Test
+	@Ignore
 	public void testTokenGerman() throws ParseException, PaymentException {
 		Token token = mpay24.token(getTestTokenRequest(null));
 		assertEquals("REDIRECT", token.getReturnCode());
@@ -44,6 +45,7 @@ public class TestToken extends AbstractSeleniumTestcase {
 	}
 
 	@Test
+	@Ignore
 	public void testTokenEnglish() throws ParseException, PaymentException {
 		Token token = mpay24.token(getTestTokenRequest("EN"));
 		assertEquals("REDIRECT", token.getReturnCode());
@@ -58,6 +60,7 @@ public class TestToken extends AbstractSeleniumTestcase {
 	}
 
 	@Test
+	@Ignore
 	public void testTokenPaymentWith3DS() throws ParseException, PaymentException {
 		Token token = mpay24.token(getTestTokenRequest(null));
 		assertEquals("REDIRECT", token.getReturnCode());
@@ -80,6 +83,7 @@ public class TestToken extends AbstractSeleniumTestcase {
 	}
 	
 	@Test
+	@Ignore
 	public void testTokenPaymentWithout3DS() throws ParseException, PaymentException, InterruptedException {
 		Token token = mpay24.token(getTestTokenRequest(null));
 		assertEquals("REDIRECT", token.getReturnCode());
