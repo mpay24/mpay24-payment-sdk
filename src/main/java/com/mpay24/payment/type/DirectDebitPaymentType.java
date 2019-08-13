@@ -12,7 +12,7 @@ public class DirectDebitPaymentType extends PaymentTypeData {
 	private Date dateOfSignature;
 
 	public enum Brand {
-		B4P("B4P"), HOBEX_AT("HOBEX-AT"), HOBEX_DE("HOBEX-DE"), HOBEX_NL("HOBEX-NL"), BILLPAY("BILLPAY"), ATOS("ATOS"), ELV("ELV"), HEIDELPAY("HEIDELPAY");
+		B4P("B4P"), HOBEX_AT("HOBEX-AT"), HOBEX_DE("HOBEX-DE"), HOBEX_NL("HOBEX-NL"), BILLPAY("BILLPAY"), ATOS("ATOS");
 		
 		private String value;
 		private Brand(String value) {

@@ -1,20 +1,16 @@
 package com.mpay24.payment;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.remote.RemoteWebDriver;
 
-import com.mpay.soap.client.PaymentType;
 import com.mpay24.payment.data.Token;
-import com.mpay24.payment.data.TokenRequest;
-import com.mpay24.payment.type.PaymentTypeData;
-import com.mpay24.payment.type.TokenPaymentType;
 
 public class TestCreateCustomerViaToken extends AbstractSeleniumTestcase {
 
@@ -28,8 +24,7 @@ public class TestCreateCustomerViaToken extends AbstractSeleniumTestcase {
 	}
 
 	@Test
-	@Ignore
-	public void testCreateCustomerViaToken() throws PaymentException {
+	public void testCreateCustomerViaToken() throws PaymentException, InterruptedException {
 		String customerId = "12345678987633";
 		deleteProfileForTest(customerId);
 		Token token = mpay24.token(getTestTokenRequest(customerId));
@@ -46,28 +41,9 @@ public class TestCreateCustomerViaToken extends AbstractSeleniumTestcase {
 		driver.findElement(By.name("cvc")).sendKeys("123");
 		driver.findElement(By.name("cvc")).sendKeys(Keys.TAB);
 
+		Thread.sleep(1000l);
 		mpay24.createCustomer(getCustomerWithAddress(customerId, "Xenia Wiesbauer", "Grüngasse 16"), "x", getTokenPaymentType(token.getToken()));
 
 	}
 	
-	private PaymentTypeData getTokenPaymentType(String token) {
-		return new TokenPaymentType(token);
-	}
-
-	private TokenRequest getTestTokenRequest(String customerId) {
-		TokenRequest tokenRequest = new TokenRequest();
-		tokenRequest.setPaymentType(PaymentType.CC);
-		tokenRequest.setTemplateSet("DEFAULT");
-		tokenRequest.setStyle("DEFAULT");
-		return tokenRequest;
-	}
-
-	private void deleteProfileForTest(String customerId) {
-		try {
-			mpay24.deleteCustomer(customerId, null);
-		} catch (PaymentException e) {
-			// OK if Profile does not exist
-		}
-	}
-
 }

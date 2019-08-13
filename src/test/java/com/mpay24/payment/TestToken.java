@@ -8,7 +8,6 @@ import java.util.concurrent.TimeUnit;
 
 import org.apache.log4j.Logger;
 import org.junit.After;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
@@ -29,8 +28,8 @@ public class TestToken extends AbstractSeleniumTestcase {
 		closeFirefox();
 	}
 
+
 	@Test
-	@Ignore
 	public void testTokenGerman() throws ParseException, PaymentException {
 		Token token = mpay24.token(getTestTokenRequest(null));
 		assertEquals("REDIRECT", token.getReturnCode());
@@ -45,9 +44,8 @@ public class TestToken extends AbstractSeleniumTestcase {
 	}
 
 	@Test
-	@Ignore
 	public void testTokenEnglish() throws ParseException, PaymentException {
-		Token token = mpay24.token(getTestTokenRequest("EN"));
+		Token token = mpay24.token(getTestTokenRequest(null, "EN"));
 		assertEquals("REDIRECT", token.getReturnCode());
 		assertNotNull(token.getApiKey());
 		assertNotNull(token.getRedirectLocation());
@@ -60,8 +58,7 @@ public class TestToken extends AbstractSeleniumTestcase {
 	}
 
 	@Test
-	@Ignore
-	public void testTokenPaymentWith3DS() throws ParseException, PaymentException {
+	public void testTokenPaymentWith3DS() throws ParseException, PaymentException, InterruptedException {
 		Token token = mpay24.token(getTestTokenRequest(null));
 		assertEquals("REDIRECT", token.getReturnCode());
 		assertNotNull(token.getApiKey());
@@ -76,6 +73,7 @@ public class TestToken extends AbstractSeleniumTestcase {
 		driver.findElement(By.name("cvc")).sendKeys("123");
 		driver.findElement(By.name("cvc")).sendKeys(Keys.TAB);
 
+		Thread.sleep(1000l);
 		Payment response = mpay24.payment(getTestPaymentRequest(), getTokenPaymentType(token.getToken()));
 
 		assertEquals("REDIRECT", response.getReturnCode());
@@ -83,7 +81,6 @@ public class TestToken extends AbstractSeleniumTestcase {
 	}
 	
 	@Test
-	@Ignore
 	public void testTokenPaymentWithout3DS() throws ParseException, PaymentException, InterruptedException {
 		Token token = mpay24.token(getTestTokenRequest(null));
 		assertEquals("REDIRECT", token.getReturnCode());
@@ -106,21 +103,4 @@ public class TestToken extends AbstractSeleniumTestcase {
 //		assertEquals("OK", response.getReturnCode());
 //		assertNotNull(response.getmPayTid());
 	}
-
-	private PaymentTypeData getTokenPaymentType(String token) {
-		return new TokenPaymentType(token);
-	}
-
-
-	private TokenRequest getTestTokenRequest(String language) {
-		TokenRequest tokenRequest = new TokenRequest();
-		tokenRequest.setPaymentType(PaymentType.CC);
-		tokenRequest.setTemplateSet("DEFAULT");
-		tokenRequest.setStyle("DEFAULT");
-		tokenRequest.setLanguage(language);
-		return tokenRequest;
-	}
-
-	
-
 }

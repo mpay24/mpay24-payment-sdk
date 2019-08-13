@@ -23,6 +23,7 @@ import com.mpay24.payment.data.ShoppingCart;
 import com.mpay24.payment.data.ShoppingCartItem;
 import com.mpay24.payment.data.StylingOptions;
 import com.mpay24.payment.data.StylingOptions.Template;
+import com.mpay24.payment.data.TokenRequest;
 import com.mpay24.payment.type.CreditCardPaymentType;
 import com.mpay24.payment.type.DebitCardPaymentType;
 import com.mpay24.payment.type.DirectDebitPaymentType;
@@ -35,19 +36,11 @@ import com.mpay24.payment.type.PaymentTypeData;
 import com.mpay24.payment.type.PaypalPaymentType;
 import com.mpay24.payment.type.PaysafecardPaymentType;
 import com.mpay24.payment.type.QuickPaymentType;
+import com.mpay24.payment.type.TokenPaymentType;
 
 public abstract class AbstractTestCase {
-	protected Mpay24 mpay24 = new Mpay24("u93975", getPassword(), Environment.TEST);
+	protected Mpay24 mpay24 = new Mpay24("93975", getPassword(), Environment.TEST);
 
-	
-	protected String getPassword(String pwd) {
-      String password = System.getProperty("mpay24.merchant.password");
-      if (password == null) {
-          password = pwd;
-      }
-      return password;
-    }
-	
 	protected String getPassword() {
 		String password = System.getProperty("mpay24.merchant.password");
 		if (password == null) {
@@ -150,6 +143,9 @@ public abstract class AbstractTestCase {
 		return paymentInclusionList;
 	}
 
+	protected PaymentRequest getTestPaymentRequestUncaptured(Double amount) {
+		return getTestPaymentRequest(amount, null, null, false, null, false);
+	}
 	protected PaymentRequest getTestPaymentRequest() {
 		return getTestPaymentRequest(1.0, null, null);
 	}
@@ -166,6 +162,9 @@ public abstract class AbstractTestCase {
 		return getTestPaymentRequest(1.0, null, null, true, null);
 	}
 	protected PaymentRequest getTestPaymentRequest(Double amount, List<PaymentType> paymentTypeInclusionList, Language language, Boolean savePaymentData, String storedPaymentDataId) {
+		return getTestPaymentRequest(amount, paymentTypeInclusionList, language, savePaymentData, storedPaymentDataId, null);
+	}
+	protected PaymentRequest getTestPaymentRequest(Double amount, List<PaymentType> paymentTypeInclusionList, Language language, Boolean savePaymentData, String storedPaymentDataId, Boolean capture) {
 		PaymentRequest paymentRequest = new PaymentRequest();
 		paymentRequest.setAmount(new BigDecimal(amount));
 		paymentRequest.setTransactionID("1");
@@ -173,7 +172,7 @@ public abstract class AbstractTestCase {
 		paymentRequest.setLanguage(language);
 		paymentRequest.setSavePaymentData(savePaymentData);
 		paymentRequest.setStoredPaymentDataId(storedPaymentDataId);
-
+		paymentRequest.setCapture(capture);
 		return paymentRequest;
 	}
 	
@@ -225,7 +224,7 @@ public abstract class AbstractTestCase {
 		CreditCardPaymentType paymentType = new CreditCardPaymentType();
 		paymentType.setPan("4444333322221111");
 		paymentType.setCvc("123");
-		paymentType.setExpiry(getCreditCardMonthYearDate("12/2018"));
+		paymentType.setExpiry(getCreditCardMonthYearDate("12/2016"));
 		paymentType.setBrand(com.mpay24.payment.type.CreditCardPaymentType.Brand.VISA);
 		return paymentType;
 	}
@@ -341,6 +340,27 @@ public abstract class AbstractTestCase {
 	protected Date getCreditCardMonthYearDate(String string) throws ParseException {
 		return new SimpleDateFormat("MM/yyyy").parse(string);
 	}
+	protected TokenRequest getTestTokenRequest(String customerId) {
+		return getTestTokenRequest(customerId, null);
+	}
+	protected TokenRequest getTestTokenRequest(String customerId, String language) {
+		TokenRequest tokenRequest = new TokenRequest();
+		tokenRequest.setPaymentType(com.mpay.soap.client.PaymentType.CC);
+		tokenRequest.setTemplateSet("DEFAULT");
+		tokenRequest.setStyle("DEFAULT");
+		tokenRequest.setLanguage(language);
+		return tokenRequest;
+	}
+	protected PaymentTypeData getTokenPaymentType(String token){
+		return new TokenPaymentType(token);
+	}
 
+	protected void deleteProfileForTest(String customerId) {
+		try {
+			mpay24.deleteCustomer(customerId, null);
+		} catch (PaymentException e) {
+			// OK if Profile does not exist
+		}
+	}
 	
 }
