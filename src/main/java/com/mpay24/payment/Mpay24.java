@@ -36,9 +36,7 @@ public class Mpay24 {
 
 	public enum Environment {
 		INTEGRATION("https://it.mpay24.com/app/bin/etpproxy_v15", "https://it.mpay24.com/soap/etp/1.5/ETP.wsdl"), 
-		TEST("https://test.mpay24.com/app/bin/etpproxy_v15", "https://test.mpay24.com/soap/etp/1.5/ETP.wsdl"),
-		CONV_DEV("https://dev-mpay24-api.heidelpay.com/app/bin/etpproxy_v15", "https://test.mpay24.com/soap/etp/1.5/ETP.wsdl"),
-		MT("https://test.mpay24.com/app/bin/etpproxy_v15", "https://test.mpay24.com/soap/etp/1.5/ETP.wsdl"), 
+		TEST("https://test.mpay24.com/app/bin/etpproxy_v15", "https://test.mpay24.com/soap/etp/1.5/ETP.wsdl"), 
 		PRODUCTION("https://www.mpay24.com/app/bin/etpproxy_v15", "https://www.mpay24.com/soap/etp/1.5/ETP.wsdl");
 
 		private String endpoint;
@@ -95,29 +93,15 @@ public class Mpay24 {
 	private String getMdxiOrderAsString(PaymentRequest paymentRequest, Customer customer, ShoppingCart shoppingCart, StylingOptions stylingOptions) {
 		return getMdxiMapper().constructAndMarshalOrder(paymentRequest, customer, shoppingCart, stylingOptions);
 	}
-	
-	public Payment createProfile(PaymentRequest paymentRequest, Customer customer, String profileId) throws PaymentException {
-		return getSoapCommunication().createProfile(getMdxiOProfileAsString(paymentRequest, customer, profileId));
-	}
-	
-	private String getMdxiOProfileAsString(PaymentRequest paymentRequest, Customer customer, String profileId) {
-		return getMdxiMapper().constructAndMarshalProfile(customer, profileId, null, null, paymentRequest);
-	}
 
 	public Payment payment(PaymentRequest paymentRequest, PaymentTypeData paymentTypeData) throws PaymentException {
 		return payment(paymentRequest, paymentTypeData, null);
 	}
-	public Payment payment(PaymentRequest paymentRequest, PaymentTypeData paymentTypeData, boolean isAuthorizatio) throws PaymentException {
-		return payment(paymentRequest, paymentTypeData, null, isAuthorizatio);
-	}
 	public Payment payment(PaymentRequest paymentRequest, PaymentTypeData paymentTypeData, Customer customer) throws PaymentException {
-		return payment(paymentRequest, paymentTypeData, customer, null, (Boolean)null);
+		return payment(paymentRequest, paymentTypeData, customer, null);
 	}
-	public Payment payment(PaymentRequest paymentRequest, PaymentTypeData paymentTypeData, Customer customer, boolean isAuthorization) throws PaymentException {
-		return payment(paymentRequest, paymentTypeData, customer, null, isAuthorization);
-	}
-	public Payment payment(PaymentRequest paymentRequest, PaymentTypeData paymentTypeData, Customer customer, ShoppingCart shoppingCart, Boolean isAuthorization) throws PaymentException {
-		com.mpay.soap.client.Payment payment = mapper.mapPaymentSystemData(paymentRequest, paymentTypeData, isAuthorization);
+	public Payment payment(PaymentRequest paymentRequest, PaymentTypeData paymentTypeData, Customer customer, ShoppingCart shoppingCart) throws PaymentException {
+		com.mpay.soap.client.Payment payment = mapper.mapPaymentSystemData(paymentRequest, paymentTypeData);
 		Order order = mapper.mapOrder(paymentRequest, customer, shoppingCart);
 
 		return soapCommunication.acceptPayment(paymentRequest.getTransactionID(), paymentTypeData.getPaymentType(), payment,
@@ -158,11 +142,11 @@ public class Mpay24 {
 		return soapCommunication.manualCredit(payment);
 	}
 	
-	public Payment cancel(BigInteger mPayTid) throws PaymentException {
-		return soapCommunication.manualReverse(mPayTid);
+	public void cancel(BigInteger mPayTid) throws PaymentException {
+		soapCommunication.manualReverse(mPayTid);
 	}
-	public Payment cancel(Payment payment) throws PaymentException {
-		return soapCommunication.manualReverse(payment);
+	public void cancel(Payment payment) throws PaymentException {
+		soapCommunication.manualReverse(payment);
 	}
 	
 	public Payment capture(BigInteger mPayTid) throws PaymentException {
@@ -191,14 +175,24 @@ public class Mpay24 {
 		soapCommunication.deleteProfile(customerId, profileId);
 	}
 	
-	public Payment createCustomer(Customer customer, PaymentTypeData paymentTypeData) throws PaymentException {
-		return createCustomer(customer, null, paymentTypeData);
+	public void createCustomer(Customer customer, PaymentTypeData paymentTypeData) throws PaymentException {
+		createCustomer(customer, null, paymentTypeData);
 	}
-	public Payment createCustomer(Customer customer, String profileId, PaymentTypeData paymentTypeData) throws PaymentException {
+	public void createCustomer(Customer customer, String profileId, PaymentTypeData paymentTypeData) throws PaymentException {
 		PaymentType paymentType = mapper.mapPaymentTypeData(paymentTypeData);
 		com.mpay.soap.client.PaymentData paymentData = mapper.mapPaymentData(paymentTypeData, profileId);
 		Address address = mapper.mapCustomer(customer);
-		return soapCommunication.createCustomer(customer.getCustomerId(), customer.getName(), address, paymentType, paymentData);
+		soapCommunication.createCustomer(customer.getCustomerId(), customer.getName(), address, paymentType, paymentData);
+	}
+
+	public Payment createCustomer(Customer customer, String profileId, PaymentTypeData paymentTypeData, PaymentRequest paymentRequest, boolean validate) throws PaymentException {
+		PaymentType paymentType = mapper.mapPaymentTypeData(paymentTypeData);
+		Order order = mapper.mapOrder(paymentRequest, customer, null);
+		com.mpay.soap.client.PaymentData paymentData = mapper.mapPaymentData(paymentTypeData, profileId);
+		Address address = mapper.mapCustomer(customer);
+		paymentData.setValidate(validate);
+		return soapCommunication.createCustomer(customer.getCustomerId(), customer.getName(), address, paymentType, paymentData, paymentRequest.getTransactionID(), order, paymentRequest.getSuccessUrl(), paymentRequest.getErrorUrl(),
+				paymentRequest.getConfirmationUrl(), paymentRequest.getLanguageString());
 	}
 
 	private SoapCommunication getSoapCommunication() {

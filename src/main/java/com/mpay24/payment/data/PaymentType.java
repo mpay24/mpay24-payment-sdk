@@ -60,7 +60,6 @@ public enum PaymentType {
 	private PaymentType(String paymentType, Integer id) {
 		this.paymentType = paymentType;
 		this.id = id;
-		this.brand = null;
 	}
 
 	private PaymentType(String paymentType, String brand, Integer id) {
@@ -91,26 +90,7 @@ public enum PaymentType {
 				return paymentType;
 			}
 		}
-		throw new IllegalArgumentException("The Payment [Id: " + paymentMethodId + "] does not exist!");
-
-	}
-	
-	//TODO: how to determine for example different DirectDebit payments back from HP DD payment?
-	public static com.mpay24.payment.data.PaymentType fromTypeAndBrand(String type, String brand) {
-		PaymentType typeOnly = null;
-		for (PaymentType paymentType : PaymentType.values()) {
-			if (paymentType.paymentType.equals(type) && paymentType.brand != null && paymentType.brand.equals(brand)) {
-				return paymentType;
-			} else if (paymentType.paymentType.equals(type) && paymentType.id == null) {
-				typeOnly = paymentType;
-			}
-		}
-		//fallback to type only
-		if(typeOnly != null) {
-			return typeOnly;
-		}		
-//		throw new IllegalArgumentException("The Payment [Type: " + type + "] [Brand: " + brand + "]  does not exist!");
-		return null;
+		throw new IllegalArgumentException("The Payment Method Id " + paymentMethodId + " does not exist!");
 
 	}
 

@@ -5,7 +5,6 @@ import static org.junit.Assert.assertNotNull;
 
 import org.apache.log4j.Logger;
 import org.junit.After;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
@@ -27,7 +26,6 @@ public class TestPaymentPanel extends AbstractSeleniumTestcase {
 	}
 
 	@Test
-	@Ignore
 	public void testMostSimpleRedirectPayment() throws PaymentException {
 		Payment response = mpay24.paymentPage(getTestPaymentRequest());
 		assertSuccessfullResponse(response);
@@ -56,17 +54,15 @@ public class TestPaymentPanel extends AbstractSeleniumTestcase {
 	}
 
 	@Test
-	@Ignore
 	public void testRestrictPaymenttype() throws PaymentException {
 		Payment response = mpay24.paymentPage(getTestPaymentRequest(getTestPaymentInclusionList(PaymentType.CreditCard)));
 		assertSuccessfullResponse(response);
 
 		RemoteWebDriver driver = openFirefoxAtUrl(response.getRedirectLocation());
-		assertEquals("Kreditkarte", driver.findElementById("ptype_desc").getText());
+		assertEquals("Kartenzahlung", driver.findElementById("ptype_desc").getText());
 	}
 
 	@Test
-	@Ignore
 	public void testRestrictPaymenttypeInvoice() throws PaymentException {
 		Payment response = mpay24.paymentPage(getTestPaymentRequest(getTestPaymentInclusionList(PaymentType.DirectDebit)));
 		assertSuccessfullResponse(response);
@@ -76,7 +72,6 @@ public class TestPaymentPanel extends AbstractSeleniumTestcase {
 	}
 
 	@Test
-	@Ignore
 	public void testRestrictPaymenttypeAndBrand() throws PaymentException {
 		Payment response = mpay24.paymentPage(getTestPaymentRequest(getTestPaymentInclusionList(PaymentType.CreditCard_Mastercard)));
 		assertSuccessfullResponse(response);
@@ -84,7 +79,6 @@ public class TestPaymentPanel extends AbstractSeleniumTestcase {
 	}
 
 	@Test
-	@Ignore
 	public void testShoppingCartAmounts() throws PaymentException {
 		Payment response = mpay24.paymentPage(getTestPaymentRequest(120.0, null), getTestShoppingCart());
 		assertSuccessfullResponse(response);
@@ -108,7 +102,6 @@ public class TestPaymentPanel extends AbstractSeleniumTestcase {
 	}
 	
 	@Test
-	@Ignore
 	public void testShoppingCartItems() throws PaymentException {
 		Payment response = mpay24.paymentPage(getTestPaymentRequest(120.0, null), getTestShoppingCart(getTestShoppingCartItemList()));
 		assertSuccessfullResponse(response);
@@ -119,7 +112,6 @@ public class TestPaymentPanel extends AbstractSeleniumTestcase {
 	}
 	
 	@Test
-	@Ignore
 	public void testLanguageEnglish() throws PaymentException {
 		Payment response = mpay24.paymentPage(getTestPaymentRequest(1.0, null, Language.EN), getTestShoppingCart(getTestShoppingCartItemList()));
 		assertSuccessfullResponse(response);
@@ -139,7 +131,6 @@ public class TestPaymentPanel extends AbstractSeleniumTestcase {
 	}
 	
 	@Test
-	@Ignore
 	public void testTemplateDefault() throws PaymentException {
 		Payment response = mpay24.paymentPage(getTestPaymentRequest(), getStylingOptions(Template.DEFAULT));
 		assertSuccessfullResponse(response);
@@ -149,7 +140,6 @@ public class TestPaymentPanel extends AbstractSeleniumTestcase {
 	}
 
 	@Test
-	@Ignore
 	public void testTemplateMobile() throws PaymentException {
 		Payment response = mpay24.paymentPage(getTestPaymentRequest(), getStylingOptions(Template.MOBILE));
 		assertSuccessfullResponse(response);
@@ -164,7 +154,6 @@ public class TestPaymentPanel extends AbstractSeleniumTestcase {
 	}
 	
 	@Test
-	@Ignore
 	public void testShippingAddress() throws PaymentException {
 		Payment response = mpay24.paymentPage(getTestPaymentRequest(), getCustomerWithAddress(null));
 		assertSuccessfullResponse(response);
@@ -183,7 +172,6 @@ public class TestPaymentPanel extends AbstractSeleniumTestcase {
 	}
 
 	@Test
-	@Ignore
 	public void testShippingAddressWithStreet2() throws PaymentException {
 		Payment response = mpay24.paymentPage(getTestPaymentRequest(), getCustomerWithAddress("Coconut 3"));
 		assertSuccessfullResponse(response);

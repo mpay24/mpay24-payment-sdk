@@ -17,7 +17,6 @@ import javax.xml.ws.Holder;
 import org.apache.cxf.configuration.jsse.TLSClientParameters;
 import org.apache.cxf.endpoint.Client;
 import org.apache.cxf.frontend.ClientProxy;
-import org.apache.cxf.interceptor.LoggingInInterceptor;
 import org.apache.cxf.interceptor.LoggingOutInterceptor;
 import org.apache.cxf.transport.http.HTTPConduit;
 import org.apache.log4j.Logger;
@@ -153,19 +152,16 @@ public class SoapCommunication {
 		return getRefund(returnCodeHolder, transactionEntryHolder);
 	}
 
-	public Payment manualReverse(Payment payment) throws PaymentException {
+	public void manualReverse(Payment payment) throws PaymentException {
+		manualReverse(payment.getmPayTid());
+	}
+
+	public void manualReverse(BigInteger mPayTid) throws PaymentException {
 		Holder<Status> statusHolder = new Holder<Status>();
 		Holder<String> returnCodeHolder = new Holder<String>();
 		Holder<Transaction> transactionEntryHolder = new Holder<Transaction>();
-		getSoapClientProxy().manualReverse(getMerchantIdAsLong(), payment.getmPayTid(), statusHolder, returnCodeHolder, transactionEntryHolder);
+		getSoapClientProxy().manualReverse(getMerchantIdAsLong(), mPayTid, statusHolder, returnCodeHolder, transactionEntryHolder);
 		checkForError(statusHolder, returnCodeHolder);
-		return getCancelPayment(payment, returnCodeHolder, transactionEntryHolder);
-	}
-
-	public Payment manualReverse(BigInteger mPayTid) throws PaymentException {
-		Payment payment = new Payment();
-		payment.setmPayTid(mPayTid);
-		return manualReverse(payment);
 	}
 
 	public Payment manualClear(Payment payment) throws PaymentException {
@@ -221,28 +217,30 @@ public class SoapCommunication {
 	}
 
 	public Payment createCustomer(String customerId, String customerName, com.mpay.soap.client.Address address, PaymentType pType,
+			com.mpay.soap.client.PaymentData paymentData, String tid, Order order, String successUrl, String errorUrl, String confirmationUrl, String language) throws PaymentException {
+		Holder<Status> statusHolder = new Holder<Status>();
+		Holder<String> returnCodeHolder = new Holder<String>();
+		Holder<Integer> errorNumberHolder = new Holder<Integer>();
+		Holder<String> errorTextHolder = new Holder<String>();
+		Holder<BigInteger> mpayTid = new Holder<BigInteger>();
+		Holder<String> locationHolder = new Holder<String>();
+
+		getSoapClientProxy().createCustomer(getMerchantIdAsLong(), tid, pType, paymentData, customerId, customerName, order, address, successUrl, errorUrl, confirmationUrl, language, statusHolder, returnCodeHolder, mpayTid, errorNumberHolder, errorTextHolder, locationHolder);
+		checkForError(statusHolder, returnCodeHolder);
+		return getPaymentResponse(statusHolder, returnCodeHolder, errorNumberHolder, errorTextHolder, locationHolder, null, null, null);
+	}
+	public void createCustomer(String customerId, String customerName, com.mpay.soap.client.Address address, PaymentType pType,
 					com.mpay.soap.client.PaymentData paymentData) throws PaymentException {
 		Holder<Status> statusHolder = new Holder<Status>();
 		Holder<String> returnCodeHolder = new Holder<String>();
 		Holder<Integer> errorNumberHolder = new Holder<Integer>();
 		Holder<String> errorTextHolder = new Holder<String>();
+		Holder<BigInteger> mpayTid = new Holder<BigInteger>();
+		Holder<String> location = new Holder<String>();
 
-		getSoapClientProxy().createCustomer(getMerchantIdAsLong(), pType, paymentData, customerId, customerName, address, (String) null, statusHolder,
-						returnCodeHolder, errorNumberHolder, errorTextHolder);
+
+		getSoapClientProxy().createCustomer(getMerchantIdAsLong(), null, pType, paymentData, customerId, customerName, null, address, null, null, null, null, statusHolder, returnCodeHolder, mpayTid, errorNumberHolder, errorTextHolder, location);
 		checkForError(statusHolder, returnCodeHolder);
-		return getCreateCustomerStatus(returnCodeHolder, errorNumberHolder, errorTextHolder);
-	}
-	
-	public Payment createProfile(String mdxi) throws PaymentException {
-		Holder<Status> statusHolder = new Holder<Status>();
-		Holder<String> returnCodeHolder = new Holder<String>();
-		Holder<Integer> errorNumberHolder = new Holder<Integer>();
-		Holder<String> errorTextHolder = new Holder<String>();
-		Holder<String> locationHolder = new Holder<String>();
-		
-		getSoapClientProxy().createProfile(getMerchantIdAsLong(), mdxi, statusHolder, returnCodeHolder, errorNumberHolder, errorTextHolder, locationHolder);
-		
-		return getPaymentResponse(statusHolder, returnCodeHolder, errorNumberHolder, errorTextHolder, locationHolder, null, null, null);
 	}
 
 	public List<PaymentData> listProfiles(String customerId, Date expiredBy, Long begin, Long size) throws PaymentException {
@@ -282,12 +280,8 @@ public class SoapCommunication {
 
 	private PaymentData getProfile(Profile profile) {
 		PaymentData storedPaymentData = new PaymentData();
-		if(profile.getUpdated() != null) {
-			storedPaymentData.setLastUpdated(profile.getUpdated().toGregorianCalendar().getTime());
-		}
-		if(profile.getCustomerID() != null) {
-			storedPaymentData.setCustomer(getCustomer(profile.getCustomerID()));
-		}
+		storedPaymentData.setLastUpdated(profile.getUpdated().toGregorianCalendar().getTime());
+		storedPaymentData.setCustomer(getCustomer(profile.getCustomerID()));
 		return storedPaymentData;
 	}
 
@@ -297,9 +291,7 @@ public class SoapCommunication {
 		storedPaymentData.setExpires(pProfile.getExpires());
 		storedPaymentData.setIdentifier(pProfile.getIdentifier());
 		storedPaymentData.setLastUpdated(pProfile.getUpdated().toGregorianCalendar().getTime());
-		if(pProfile.getPMethodID() != null) {
-			storedPaymentData.setPaymentType(com.mpay24.payment.data.PaymentType.fromId(pProfile.getPMethodID().intValue()));
-		}
+		storedPaymentData.setPaymentType(com.mpay24.payment.data.PaymentType.fromId(pProfile.getPMethodID().intValue()));
 		storedPaymentData.setProfileId(pProfile.getProfileID());
 	}
 
@@ -386,24 +378,6 @@ public class SoapCommunication {
 		refund.setReturnCode(returnCodeHolder.value);
 		return refund;
 	}
-	
-	private Payment getCancelPayment(Payment payment, Holder<String> returnCodeHolder, Holder<Transaction> transactionEntryHolder) {
-		Transaction tx = transactionEntryHolder.value;
-		payment.setmPayTid(tx.getMpayTID());
-		payment.setStateID(tx.getStateID());
-		payment.setState(State.valueOf(tx.getTStatus().toString()));
-		payment.setTransactionId(tx.getTid());
-		payment.setReturnCode(returnCodeHolder.value);
-		return payment;		
-	}
-	
-	private Payment getCreateCustomerStatus(Holder<String> returnCodeHolder, Holder<Integer> errorNumberHolder, Holder<String> errorTextHolder) {
-		Payment payment = new Payment();
-		payment.setErrorNumber(errorNumberHolder.value);
-		payment.setErrorText(errorTextHolder.value);
-		payment.setReturnCode(returnCodeHolder.value);
-		return payment;		
-	}
 
 	private Payment getPaymentStatus(Holder<List<Parameter>> parameterEntryHolder) {
 		Payment payment = new Payment();
@@ -430,8 +404,6 @@ public class SoapCommunication {
 				payment.getCustomer().setEmail(param.getValue());
 			} else if ("CUSTOMER_ID".equalsIgnoreCase(param.getName())) {
 				payment.getCustomer().setCustomerId(param.getValue());
-			} else if ("PROFILE_STATUS".equalsIgnoreCase(param.getName())) {
-				payment.setProfileStatus(param.getValue());
 			}
 			logger.debug("name: '" + param.getName() + "', value: '" + param.getValue() + "'");
 		}
@@ -491,7 +463,6 @@ public class SoapCommunication {
 	private Client getSoapClient(ETP etp) {
 		Client cxfClient = ClientProxy.getClient(etp);
 		cxfClient.getOutInterceptors().add(new LoggingOutInterceptor());
-		cxfClient.getInInterceptors().add(new LoggingInInterceptor());
 		return cxfClient;
 	}
 

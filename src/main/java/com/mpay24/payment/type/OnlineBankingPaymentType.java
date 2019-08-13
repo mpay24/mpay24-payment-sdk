@@ -9,7 +9,7 @@ public class OnlineBankingPaymentType extends PaymentTypeData {
 	private String iban;
 
 	public enum Brand {
-		EPS, SOFORT, GIROPAY
+		EPS, EPS_STUZZA_BANK_SELECTION, SOFORT, GIROPAY
 	}
 	
 	public OnlineBankingPaymentType() {
@@ -21,7 +21,11 @@ public class OnlineBankingPaymentType extends PaymentTypeData {
 	}
 
 	public void setBrand(Brand brand) {
-		setPaymentType(PaymentType.fromValue(brand.toString()));
+		if (brand == Brand.EPS_STUZZA_BANK_SELECTION) {
+			setPaymentType(PaymentType.EPS);
+		} else {
+			setPaymentType(PaymentType.fromValue(brand.toString()));
+		}
 		this.brand = brand;
 	}
 

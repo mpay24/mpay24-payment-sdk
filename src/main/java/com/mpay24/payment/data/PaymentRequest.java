@@ -48,13 +48,11 @@ public class PaymentRequest {
 	private String token;
 	private Language language;
 	private boolean savePaymentData = false;
+	private Boolean capture;
 	private String storedPaymentDataId;
-	private String priceHeader;
-	private PageStyle pageStyle;
+	private Long timeoutSeconds;
 
 	private List<PaymentType> paymentTypeInclusionList = new ArrayList<PaymentType>();
-	private boolean enableForRestrictions = true;
-
 
 	public String getTransactionID() {
 		return transactionID;
@@ -140,6 +138,11 @@ public class PaymentRequest {
 	public Language getLanguage() {
 		return language;
 	}
+	public String getLanguageString() {
+		if (language == null) return null;
+		else return language.toString();
+				
+	}
 
 	public void setLanguage(Language language) {
 		this.language = language;
@@ -177,28 +180,20 @@ public class PaymentRequest {
 		this.cancelUrl = cancelUrl;
 	}
 
-	public boolean isEnableForRestrictions() {
-		return enableForRestrictions;
+	public Boolean isCapture() {
+		return capture;
 	}
 
-	public void setEnableForRestrictions(boolean enableForRestrictions) {
-		this.enableForRestrictions = enableForRestrictions;
+	public void setCapture(Boolean capture) {
+		this.capture = capture;
 	}
 
-	public String getPriceHeader() {
-		return priceHeader;
+	public Long getTimeoutSeconds() {
+		return timeoutSeconds;
 	}
 
-	public void setPriceHeader(String priceHeader) {
-		this.priceHeader = priceHeader;
-	}
-
-	public PageStyle getPageStyle() {
-		return pageStyle;
-	}
-
-	public void setPageStyle(PageStyle pageStyle) {
-		this.pageStyle = pageStyle;
+	public void setTimeoutSeconds(Long timeoutSeconds) {
+		this.timeoutSeconds = timeoutSeconds;
 	}
 
 }
