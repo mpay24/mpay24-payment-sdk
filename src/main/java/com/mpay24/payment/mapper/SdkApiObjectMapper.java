@@ -117,11 +117,11 @@ public class SdkApiObjectMapper {
 		return paymentData;
 	}
 
-	public Payment mapPaymentSystemData(PaymentRequest paymentRequest, PaymentTypeData paymentType, Boolean isAuthorization) {
+	public Payment mapPaymentSystemData(PaymentRequest paymentRequest, PaymentTypeData paymentType) {
 		if (paymentType instanceof DirectDebitPaymentType) {
 			return mapPaymentSystemData(paymentRequest, (DirectDebitPaymentType) paymentType);
 		} else if (paymentType instanceof CreditCardPaymentType) {
-			return mapPaymentSystemData(paymentRequest, (CreditCardPaymentType) paymentType, isAuthorization);
+			return mapPaymentSystemData(paymentRequest, (CreditCardPaymentType) paymentType);
 		} else if (paymentType instanceof DebitCardPaymentType) {
 			return mapPaymentSystemData(paymentRequest, (DebitCardPaymentType) paymentType);
 		} else if (paymentType instanceof InvoicePaymentType) {
@@ -194,7 +194,7 @@ public class SdkApiObjectMapper {
 		return convertedAmount.doubleValue();
 	}
 
-	private Payment mapPaymentSystemData(PaymentRequest paymentRequest, CreditCardPaymentType paymentTypeData, Boolean isAuthorization) {
+	private Payment mapPaymentSystemData(PaymentRequest paymentRequest, CreditCardPaymentType paymentTypeData) {
 		PaymentCC payment = new PaymentCC();
 		payment.setAmount(convertBigDecimalToInteger(paymentRequest.getAmount()));
 		payment.setCurrency(paymentRequest.getCurrency());
@@ -207,8 +207,15 @@ public class SdkApiObjectMapper {
 		payment.setIdentifier(paymentTypeData.getPan());
 		payment.setUseProfile(paymentRequest.isSavePaymentData());
 		payment.setProfileID(paymentRequest.getStoredPaymentDataId());
-		payment.setManualClearing(isAuthorization);
+		payment.setTimeout(paymentRequest.getTimeoutSeconds());
+		setManualClearing(paymentRequest, payment);
 		return payment;
+	}
+
+	private void setManualClearing(PaymentRequest paymentRequest, Payment payment) {
+		if (paymentRequest.isCapture() != null) {
+			payment.setManualClearing(!paymentRequest.isCapture());
+		}
 	}
 
 	private Payment mapPaymentSystemData(PaymentRequest paymentRequest, DebitCardPaymentType paymentTypeData) {
@@ -219,6 +226,8 @@ public class SdkApiObjectMapper {
 		payment.setIdentifier(paymentTypeData.getPan());
 		payment.setUseProfile(paymentRequest.isSavePaymentData());
 		payment.setProfileID(paymentRequest.getStoredPaymentDataId());
+		payment.setTimeout(paymentRequest.getTimeoutSeconds());
+		setManualClearing(paymentRequest, payment);
 		return payment;
 	}
 
@@ -233,6 +242,8 @@ public class SdkApiObjectMapper {
 		payment.setBrand(paymentTypeData.getBrand().toString());
 		payment.setUseProfile(paymentRequest.isSavePaymentData());
 		payment.setProfileID(paymentRequest.getStoredPaymentDataId());
+		payment.setTimeout(paymentRequest.getTimeoutSeconds());
+		setManualClearing(paymentRequest, payment);
 		return payment;
 	}
 
@@ -245,6 +256,8 @@ public class SdkApiObjectMapper {
 			paymentTypeData.setPaymentType(PaymentType.BILLPAY);
 			payment.setUseProfile(paymentRequest.isSavePaymentData());
 			payment.setProfileID(paymentRequest.getStoredPaymentDataId());
+			payment.setTimeout(paymentRequest.getTimeoutSeconds());
+			setManualClearing(paymentRequest, payment);
 			return payment;
 		} else {
 			PaymentKLARNA payment = new PaymentKLARNA();
@@ -256,6 +269,8 @@ public class SdkApiObjectMapper {
 			paymentTypeData.setPaymentType(PaymentType.KLARNA);
 			payment.setUseProfile(paymentRequest.isSavePaymentData());
 			payment.setProfileID(paymentRequest.getStoredPaymentDataId());
+			payment.setTimeout(paymentRequest.getTimeoutSeconds());
+			setManualClearing(paymentRequest, payment);
 			return payment;
 		}
 	}
@@ -270,6 +285,20 @@ public class SdkApiObjectMapper {
 			payment.setBrand(paymentTypeData.getBrand().toString());
 			payment.setUseProfile(paymentRequest.isSavePaymentData());
 			payment.setProfileID(paymentRequest.getStoredPaymentDataId());
+			payment.setTimeout(paymentRequest.getTimeoutSeconds());
+			setManualClearing(paymentRequest, payment);
+			return payment;
+		} else if (paymentTypeData.getBrand() == com.mpay24.payment.type.OnlineBankingPaymentType.Brand.EPS_STUZZA_BANK_SELECTION) {
+			PaymentEPS payment = new PaymentEPS();
+			payment.setAmount(convertBigDecimalToInteger(paymentRequest.getAmount()));
+			payment.setCurrency(paymentRequest.getCurrency());
+			payment.setBankID(paymentTypeData.getStuzzaBankId());
+			payment.setBic(paymentTypeData.getBic());
+			payment.setBrand("INTERNATIONAL");
+			payment.setUseProfile(paymentRequest.isSavePaymentData());
+			payment.setProfileID(paymentRequest.getStoredPaymentDataId());
+			payment.setTimeout(paymentRequest.getTimeoutSeconds());
+			setManualClearing(paymentRequest, payment);
 			return payment;
 		} else if (paymentTypeData.getBrand() == com.mpay24.payment.type.OnlineBankingPaymentType.Brand.SOFORT) {
 			Payment payment = new Payment();
@@ -277,6 +306,8 @@ public class SdkApiObjectMapper {
 			payment.setCurrency(paymentRequest.getCurrency());
 			payment.setUseProfile(paymentRequest.isSavePaymentData());
 			payment.setProfileID(paymentRequest.getStoredPaymentDataId());
+			payment.setTimeout(paymentRequest.getTimeoutSeconds());
+			setManualClearing(paymentRequest, payment);
 			return payment;
 		} else if (paymentTypeData.getBrand() == com.mpay24.payment.type.OnlineBankingPaymentType.Brand.GIROPAY) {
 			PaymentGIROPAY payment = new PaymentGIROPAY();
@@ -286,6 +317,8 @@ public class SdkApiObjectMapper {
 			payment.setIban(paymentTypeData.getIban());
 			payment.setUseProfile(paymentRequest.isSavePaymentData());
 			payment.setProfileID(paymentRequest.getStoredPaymentDataId());
+			payment.setTimeout(paymentRequest.getTimeoutSeconds());
+			setManualClearing(paymentRequest, payment);
 			return payment;
 		}
 		return null;
@@ -298,6 +331,8 @@ public class SdkApiObjectMapper {
 		payment.setCustom(paymentTypeData.getCustom());
 		payment.setUseProfile(paymentRequest.isSavePaymentData());
 		payment.setProfileID(paymentRequest.getStoredPaymentDataId());
+		payment.setTimeout(paymentRequest.getTimeoutSeconds());
+		setManualClearing(paymentRequest, payment);
 		if (paymentTypeData.isExpressCheckout()) {
 			payment.setCommit(false);
 		}
@@ -313,6 +348,8 @@ public class SdkApiObjectMapper {
 		payment.setReserveDays(paymentTypeData.getReserveDays());
 		payment.setUseProfile(paymentRequest.isSavePaymentData());
 		payment.setProfileID(paymentRequest.getStoredPaymentDataId());
+		payment.setTimeout(paymentRequest.getTimeoutSeconds());
+		setManualClearing(paymentRequest, payment);
 		return payment;
 	}
 
@@ -322,6 +359,8 @@ public class SdkApiObjectMapper {
 		payment.setCurrency(paymentRequest.getCurrency());
 		payment.setDateOfSignature(paymentTypeData.getDateOfSignature());
 		payment.setMandateID(paymentTypeData.getMandateID());
+		payment.setTimeout(paymentRequest.getTimeoutSeconds());
+		setManualClearing(paymentRequest, payment);
 		return payment;
 	}
 
@@ -331,6 +370,8 @@ public class SdkApiObjectMapper {
 		payment.setCurrency(paymentRequest.getCurrency());
 		payment.setCvc(paymentTypeData.getCvc());
 		payment.setAuth3DS(paymentTypeData.isAuth3DS());
+		payment.setTimeout(paymentRequest.getTimeoutSeconds());
+		setManualClearing(paymentRequest, payment);
 		return payment;
 	}
 
@@ -340,6 +381,8 @@ public class SdkApiObjectMapper {
 		payment.setCurrency(paymentRequest.getCurrency());
 		payment.setUseProfile(paymentRequest.isSavePaymentData());
 		payment.setProfileID(paymentRequest.getStoredPaymentDataId());
+		payment.setTimeout(paymentRequest.getTimeoutSeconds());
+		setManualClearing(paymentRequest, payment);
 		return payment;
 	}
 
@@ -350,6 +393,8 @@ public class SdkApiObjectMapper {
 		payment.setUseProfile(paymentRequest.isSavePaymentData());
 		payment.setProfileID(paymentRequest.getStoredPaymentDataId());
 		payment.setToken(paymentType.getToken());
+		payment.setTimeout(paymentRequest.getTimeoutSeconds());
+		setManualClearing(paymentRequest, payment);
 		return payment;
 	}
 

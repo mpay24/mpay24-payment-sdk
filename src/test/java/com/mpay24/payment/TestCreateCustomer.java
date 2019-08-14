@@ -51,11 +51,4 @@ public class TestCreateCustomer extends AbstractTestCase {
 		assertEquals(2, storedPaymentDataList.size());
 	}
 
-	private void deleteProfileForTest(String customerId) {
-		try {
-			mpay24.deleteCustomer(customerId, null);
-		} catch (PaymentException e) {
-			// OK if Profile does not exist
-		}
-	}
 }

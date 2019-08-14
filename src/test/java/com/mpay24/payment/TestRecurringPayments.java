@@ -68,7 +68,6 @@ public class TestRecurringPayments extends AbstractSeleniumTestcase {
 	}
 
 	@Test
-	@Ignore
 	public void testStorePaymentDataViaPaymentPanel() throws ParseException, PaymentException {
 		String customerId = "max.mustermann@gmail.com";
 		
@@ -107,12 +106,5 @@ public class TestRecurringPayments extends AbstractSeleniumTestcase {
 		return new SimpleDateFormat("yy").format(new Date());
 	}
 
-	private void deleteProfileForTest(String customerId) {
-		try {
-			mpay24.deleteCustomer(customerId, null);
-		} catch (PaymentException e) {
-			// OK if Profile does not exist
-		}
-	}
 
 }

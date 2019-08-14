@@ -1,16 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>com.mpay24.payment</groupId>
 	<artifactId>mpay24-payment-sdk</artifactId>
-	<version>1.7.0.0</version>
+	<version>1.9.0.0</version>
 	<packaging>jar</packaging>
 
 	<name>${project.groupId}:${project.artifactId}</name>
 	<description>mpay24 SDK for Java. Allows easy access to the mpay24 system.</description>
 	<url>https://docs.mpay24.com</url>
+
+	<properties>
+		<maven.compiler.source>1.8</maven.compiler.source>
+		<maven.compiler.target>1.8</maven.compiler.target>
+	</properties>
 
 	<licenses>
 		<license>
@@ -58,55 +64,24 @@
 
 	<build>
 		<plugins>
-		<!-- OSGI Bundle Plugin -->
-		<!--  plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-jar-plugin</artifactId>
-        <configuration>
-          <archive>
-            <manifestFile>src/main/resources/META-INF/MANIFEST.MF</manifestFile>
-          </archive>
-        </configuration>
-      </plugin>
-			<plugin>
-				<groupId>org.apache.felix</groupId>
-				<artifactId>maven-bundle-plugin</artifactId>
-				<version>2.3.6</version>
-				<extensions>true</extensions>
-				<configuration>
-					<manifestLocation>src/main/resources/META-INF</manifestLocation>
-					<excludeDependencies>${maven.bundleplugin.exclude.dependencies}</excludeDependencies>
-					<instructions>
-						<Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
-						<Bundle-Name>${project.name}</Bundle-Name>
-						<Bundle-Version>${project.version}</Bundle-Version>
-						<Bundle-Activator></Bundle-Activator>
-						<Import-Package>*</Import-Package>
-						<Export-Package>*</Export-Package>
-						<Private-Package></Private-Package>
-						<Web-ContextPath></Web-ContextPath>
-						<Webapp-Context></Webapp-Context>
-						<Bundle-ClassPath></Bundle-ClassPath>
-						<Embed-Dependency></Embed-Dependency>
-						<Embed-Directory></Embed-Directory>
-						<Embed-Transitive></Embed-Transitive>
-					</instructions>
-					<supportedProjectTypes>
-						<supportedProjectType>jar</supportedProjectType>
-						<supportedProjectType>bundle</supportedProjectType>
-						<supportedProjectType>war</supportedProjectType>
-					</supportedProjectTypes>
-				</configuration>
-				<executions>
-					<execution>
-						<id>bundle-manifest</id>
-						<phase>process-classes</phase>
-						<goals>
-							<goal>manifest</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin -->
+			<!-- OSGI Bundle Plugin -->
+			<!-- plugin> <groupId>org.apache.maven.plugins</groupId> <artifactId>maven-jar-plugin</artifactId> 
+				<configuration> <archive> <manifestFile>src/main/resources/META-INF/MANIFEST.MF</manifestFile> 
+				</archive> </configuration> </plugin> <plugin> <groupId>org.apache.felix</groupId> 
+				<artifactId>maven-bundle-plugin</artifactId> <version>2.3.6</version> <extensions>true</extensions> 
+				<configuration> <manifestLocation>src/main/resources/META-INF</manifestLocation> 
+				<excludeDependencies>${maven.bundleplugin.exclude.dependencies}</excludeDependencies> 
+				<instructions> <Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName> 
+				<Bundle-Name>${project.name}</Bundle-Name> <Bundle-Version>${project.version}</Bundle-Version> 
+				<Bundle-Activator></Bundle-Activator> <Import-Package>*</Import-Package> 
+				<Export-Package>*</Export-Package> <Private-Package></Private-Package> <Web-ContextPath></Web-ContextPath> 
+				<Webapp-Context></Webapp-Context> <Bundle-ClassPath></Bundle-ClassPath> <Embed-Dependency></Embed-Dependency> 
+				<Embed-Directory></Embed-Directory> <Embed-Transitive></Embed-Transitive> 
+				</instructions> <supportedProjectTypes> <supportedProjectType>jar</supportedProjectType> 
+				<supportedProjectType>bundle</supportedProjectType> <supportedProjectType>war</supportedProjectType> 
+				</supportedProjectTypes> </configuration> <executions> <execution> <id>bundle-manifest</id> 
+				<phase>process-classes</phase> <goals> <goal>manifest</goal> </goals> </execution> 
+				</executions> </plugin -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
@@ -144,6 +119,12 @@
 						<goals>
 							<goal>sign</goal>
 						</goals>
+						<configuration>
+							<gpgArguments>
+								<arg>--pinentry-mode</arg>
+								<arg>loopback</arg>
+							</gpgArguments>
+						</configuration>
 					</execution>
 				</executions>
 			</plugin-->
@@ -196,12 +177,18 @@
 		<dependency>
 			<groupId>com.mpay24.payment</groupId>
 			<artifactId>mpay24-soap-client</artifactId>
-			<version>1.5.4.0</version>
+			<version>1.5.6.0</version>
 		</dependency>
 		<dependency>
 			<groupId>log4j</groupId>
 			<artifactId>log4j</artifactId>
 			<version>1.2.17</version>
+		</dependency>
+
+		<dependency>
+			<groupId>javax.xml.ws</groupId>
+			<artifactId>jaxws-api</artifactId>
+			<version>2.2.3</version>
 		</dependency>
 
 		<!-- Test dependencies -->
