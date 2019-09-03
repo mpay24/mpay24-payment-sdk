@@ -354,7 +354,7 @@ public class SdkApiObjectMapper {
 	}
 
 	private Payment mapPaymentSystemData(PaymentRequest paymentRequest, RecurringDirectDebitPaymentType paymentTypeData) {
-		ProfilePaymentELV payment = new ProfilePaymentELV();
+		PaymentELV payment = new PaymentELV();
 		payment.setAmount(convertBigDecimalToInteger(paymentRequest.getAmount()));
 		payment.setCurrency(paymentRequest.getCurrency());
 		payment.setDateOfSignature(paymentTypeData.getDateOfSignature());
@@ -365,7 +365,7 @@ public class SdkApiObjectMapper {
 	}
 
 	private Payment mapPaymentSystemData(PaymentRequest paymentRequest, RecurringCreditCardPaymentType paymentTypeData) {
-		ProfilePaymentCC payment = new ProfilePaymentCC();
+		PaymentCC payment = new PaymentCC();
 		payment.setAmount(convertBigDecimalToInteger(paymentRequest.getAmount()));
 		payment.setCurrency(paymentRequest.getCurrency());
 		payment.setCvc(paymentTypeData.getCvc());
