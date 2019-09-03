@@ -14,7 +14,7 @@ public class AbstractSeleniumTestcase extends AbstractTestCase {
 //	ChromeDriver chromeDriver;
 
 	protected RemoteWebDriver openFirefoxAtUrl(String url) {
-		System.setProperty("webdriver.gecko.driver", "/Users/rene.felder/Documents/libraries/geckodriver");
+		System.setProperty("webdriver.gecko.driver", getGeckodriverPath());
 		driver = new FirefoxDriver();
 		driver.get(url);
 		return driver;
@@ -23,7 +23,18 @@ public class AbstractSeleniumTestcase extends AbstractTestCase {
 //		driver.get(url);
 //		return driver;
 	}
-	
+
+	private String getGeckodriverPath () {
+		String os = System.getProperty("os.name").toLowerCase();
+		if (os.contains("win")) {
+			return "selenium/geckodriver/geckodriver.exe";
+		} else if (os.contains("mac")) {
+			return "selenium/geckodriver/geckodriver";
+		} else {
+			return null;
+		}
+	}
+
 	protected void closeFirefox() {
 		if (driver != null) driver.quit();
 	}
