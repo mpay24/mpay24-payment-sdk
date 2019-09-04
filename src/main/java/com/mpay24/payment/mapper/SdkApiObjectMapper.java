@@ -27,8 +27,6 @@ import com.mpay.soap.client.PaymentPAYPAL;
 import com.mpay.soap.client.PaymentPB;
 import com.mpay.soap.client.PaymentTOKEN;
 import com.mpay.soap.client.PaymentType;
-import com.mpay.soap.client.ProfilePaymentCC;
-import com.mpay.soap.client.ProfilePaymentELV;
 import com.mpay24.payment.data.Customer;
 import com.mpay24.payment.data.PaymentRequest;
 import com.mpay24.payment.data.ShoppingCart;
@@ -354,22 +352,22 @@ public class SdkApiObjectMapper {
 	}
 
 	private Payment mapPaymentSystemData(PaymentRequest paymentRequest, RecurringDirectDebitPaymentType paymentTypeData) {
-		PaymentELV payment = new PaymentELV();
+		Payment payment = new Payment();
 		payment.setAmount(convertBigDecimalToInteger(paymentRequest.getAmount()));
 		payment.setCurrency(paymentRequest.getCurrency());
-		payment.setDateOfSignature(paymentTypeData.getDateOfSignature());
-		payment.setMandateID(paymentTypeData.getMandateID());
+//		payment.setDateOfSignature(paymentTypeData.getDateOfSignature());
+//		payment.setMandateID(paymentTypeData.getMandateID());
 		payment.setTimeout(paymentRequest.getTimeoutSeconds());
 		setManualClearing(paymentRequest, payment);
 		return payment;
 	}
 
 	private Payment mapPaymentSystemData(PaymentRequest paymentRequest, RecurringCreditCardPaymentType paymentTypeData) {
-		PaymentCC payment = new PaymentCC();
+		Payment payment = new Payment();
 		payment.setAmount(convertBigDecimalToInteger(paymentRequest.getAmount()));
 		payment.setCurrency(paymentRequest.getCurrency());
-		payment.setCvc(paymentTypeData.getCvc());
-		payment.setAuth3DS(paymentTypeData.isAuth3DS());
+//		payment.setCvc(paymentTypeData.getCvc());
+//		payment.setAuth3DS(paymentTypeData.isAuth3DS());
 		payment.setTimeout(paymentRequest.getTimeoutSeconds());
 		setManualClearing(paymentRequest, payment);
 		return payment;

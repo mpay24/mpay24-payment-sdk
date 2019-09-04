@@ -60,7 +60,7 @@ public class TestTimeouts extends AbstractTestCase {
 	@Test
 	public void testEpsPreselectionPayment() throws PaymentException, ParseException {
 		PaymentRequest paymentRequest = getTestPaymentRequest();
-		paymentRequest.setTimeoutSeconds(121l);
+		paymentRequest.setTimeoutSeconds(156l);
 		Payment response = mpay24.payment(paymentRequest, getOnlinebankingPayment(com.mpay24.payment.type.OnlineBankingPaymentType.Brand.EPS_STUZZA_BANK_SELECTION), getCustomer());
 
 		assertEquals("REDIRECT", response.getReturnCode());
