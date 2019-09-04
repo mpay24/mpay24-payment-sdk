@@ -50,7 +50,7 @@ public class TestTimeouts extends AbstractTestCase {
 	@Test
 	public void testEpsMinPayment() throws PaymentException, ParseException {
 		PaymentRequest paymentRequest = getTestPaymentRequest();
-		paymentRequest.setTimeoutSeconds(121l);
+		paymentRequest.setTimeoutSeconds(156l);
 		Payment response = mpay24.payment(paymentRequest, getEpsData(), getCustomer());
 
 		assertEquals("REDIRECT", response.getReturnCode());
