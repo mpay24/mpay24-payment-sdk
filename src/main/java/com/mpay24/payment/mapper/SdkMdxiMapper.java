@@ -46,7 +46,7 @@ public class SdkMdxiMapper {
 
 	private XmlMarshaller xmlMarshaller = new XmlMarshaller();
 
-	public String constructAndMarshalOrder(PaymentRequest paymentRequest, Customer customer, ShoppingCart shoppingCart, StylingOptions stylingOptions) {
+	public String constructAndMarshalOrder(PaymentRequest paymentRequest, Customer customer, ShoppingCart shoppingCart, StylingOptions stylingOptions, String templateStyle) {
 		try {
 			com.mpay.mdxi.Order order = getOrder(paymentRequest);
 			order.setURL(getUrl(paymentRequest));
@@ -54,7 +54,7 @@ public class SdkMdxiMapper {
 			order.setCurrency(getCurrency(paymentRequest.getCurrency()));
 			order.setTid(paymentRequest.getTransactionID());
 			order.setUserField(paymentRequest.getUserField());
-			order.setTemplateSet(getTemplateSet(paymentRequest, stylingOptions));
+			order.setTemplateSet(getTemplateSet(paymentRequest, stylingOptions, templateStyle));
 			constructShoppingCart(shoppingCart, order);
 			constructPaymentTypes(paymentRequest, order);
 			constructCustomerData(paymentRequest, customer, order);
@@ -65,17 +65,18 @@ public class SdkMdxiMapper {
 		return null;
 	}
 
-	private TemplateSet getTemplateSet(PaymentRequest paymentRequest, StylingOptions stylingOptions) {
+	private TemplateSet getTemplateSet(PaymentRequest paymentRequest, StylingOptions stylingOptions, String templateStyle) {
 		TemplateSet templateSet = new TemplateSet();
 		setLanguage(paymentRequest, templateSet);
-		setTemplate(stylingOptions, templateSet);
+		setTemplate(stylingOptions, templateSet, templateStyle);
 		return templateSet;
 	}
 
-	private void setTemplate(StylingOptions stylingOptions, TemplateSet templateSet) {
+	private void setTemplate(StylingOptions stylingOptions, TemplateSet templateSet, String templateStyle) {
 		if (stylingOptions != null && stylingOptions.getTemplate() != null) {
 			templateSet.setCSSName(stylingOptions.getTemplate().toString());
-			templateSet.setValue("WEB");
+			templateStyle = templateStyle != null && (templateStyle.equals("DEFAULT") || templateStyle.equals("WEB")) ? templateStyle : "DEFAULT";
+			templateSet.setValue(templateStyle);
 		}
 	}
 

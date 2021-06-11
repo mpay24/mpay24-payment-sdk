@@ -16,11 +16,9 @@ public class TestUncapturedPayments extends AbstractTestCase {
 
 	@Test
 	public void testVisaPayment() throws ParseException, PaymentException {
+		mpay24.payment(getTestPaymentRequest(false), getVisaTestData());
 		List<Payment> paymentList = mpay24.listAuthorizations(0l, 100l, null, null, false);
 		assertNotNull(paymentList);
 		assertTrue(paymentList.size() > 0);
 	}
-
-
-
 }

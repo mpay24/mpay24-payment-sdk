@@ -87,11 +87,14 @@ public class Mpay24 {
 		return paymentPage(paymentRequest, customer, shoppingCart, null);
 	}
 	public Payment paymentPage(PaymentRequest paymentRequest, Customer customer, ShoppingCart shoppingCart, StylingOptions stylingOptions) throws PaymentException {
-		return getSoapCommunication().selectPayment(getMdxiOrderAsString(paymentRequest, customer, shoppingCart, stylingOptions));
+		return getSoapCommunication().selectPayment(getMdxiOrderAsString(paymentRequest, customer, shoppingCart, stylingOptions, "DEFAULT"));
+	}
+	public Payment paymentPage(PaymentRequest paymentRequest, Customer customer, ShoppingCart shoppingCart, StylingOptions stylingOptions, String templateStyle) throws PaymentException {
+		return getSoapCommunication().selectPayment(getMdxiOrderAsString(paymentRequest, customer, shoppingCart, stylingOptions, templateStyle));
 	}
 
-	private String getMdxiOrderAsString(PaymentRequest paymentRequest, Customer customer, ShoppingCart shoppingCart, StylingOptions stylingOptions) {
-		return getMdxiMapper().constructAndMarshalOrder(paymentRequest, customer, shoppingCart, stylingOptions);
+	private String getMdxiOrderAsString(PaymentRequest paymentRequest, Customer customer, ShoppingCart shoppingCart, StylingOptions stylingOptions, String templateStyle) {
+		return getMdxiMapper().constructAndMarshalOrder(paymentRequest, customer, shoppingCart, stylingOptions, templateStyle);
 	}
 
 	public Payment payment(PaymentRequest paymentRequest, PaymentTypeData paymentTypeData) throws PaymentException {

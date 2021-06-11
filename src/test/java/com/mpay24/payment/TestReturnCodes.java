@@ -10,7 +10,7 @@ import org.junit.Test;
 import com.mpay24.payment.Mpay24.Environment;
 
 public class TestReturnCodes extends AbstractTestCase{
-	protected Mpay24 mpay24InvalidUser = new Mpay24("12345", getPassword(), Environment.TEST);
+	protected Mpay24 mpay24InvalidUser = new Mpay24("12345", getMerchantPassword(), Environment.TEST);
 	protected Mpay24 mpay24InvalidPassword = new Mpay24("93975", "xxx", Environment.TEST);
 
 	

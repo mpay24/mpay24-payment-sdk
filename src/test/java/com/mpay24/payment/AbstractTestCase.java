@@ -39,14 +39,14 @@ import com.mpay24.payment.type.QuickPaymentType;
 import com.mpay24.payment.type.TokenPaymentType;
 
 public abstract class AbstractTestCase {
-	protected Mpay24 mpay24 = new Mpay24("93975", getPassword(), Environment.TEST);
+	protected Mpay24 mpay24 = new Mpay24(getMerchantId(), getMerchantPassword(), Environment.TEST);
 
-	protected String getPassword() {
-		String password = System.getProperty("mpay24.merchant.password");
-		if (password == null) {
-			password = "03101974";
-		}
-		return password;
+	private String getMerchantId() {
+		return System.getProperty("mpay24.merchant.id");
+	}
+
+	protected String getMerchantPassword() {
+		return System.getProperty("mpay24.merchant.password");
 	}
 
 	protected Customer getCustomerWithAddress(String customerId, String customerName, String street2) {
@@ -145,6 +145,9 @@ public abstract class AbstractTestCase {
 
 	protected PaymentRequest getTestPaymentRequestUncaptured(Double amount) {
 		return getTestPaymentRequest(amount, null, null, false, null, false);
+	}
+	protected PaymentRequest getTestPaymentRequest(boolean capture) {
+		return getTestPaymentRequest(1.0, null, null, false, null, capture);
 	}
 	protected PaymentRequest getTestPaymentRequest() {
 		return getTestPaymentRequest(1.0, null, null);

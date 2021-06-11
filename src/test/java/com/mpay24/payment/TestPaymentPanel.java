@@ -136,7 +136,7 @@ public class TestPaymentPanel extends AbstractSeleniumTestcase {
 		assertSuccessfullResponse(response);
 		
 		RemoteWebDriver driver = openFirefoxAtUrl(response.getRedirectLocation());
-		assertEquals("/app/checkout/css/DEFAULT_WEB.css", removeDomain(driver.findElement(By.xpath("//head/link[@rel='stylesheet']")).getAttribute("href")));
+		assertEquals("/app/checkout/css/DEFAULT/MODERN.css?v1", removeDomain(driver.findElement(By.xpath("//head/link[@rel='stylesheet']")).getAttribute("href")));
 	}
 
 	@Test
@@ -145,7 +145,7 @@ public class TestPaymentPanel extends AbstractSeleniumTestcase {
 		assertSuccessfullResponse(response);
 		
 		RemoteWebDriver driver = openFirefoxAtUrl(response.getRedirectLocation());
-		assertEquals("/app/checkout/css/MOBILE_WEB.css", removeDomain(driver.findElement(By.xpath("//head/link[@rel='stylesheet']")).getAttribute("href")));
+		assertEquals("/app/checkout/css/DEFAULT/MODERN.css?v1", removeDomain(driver.findElement(By.xpath("//head/link[@rel='stylesheet']")).getAttribute("href")));
 	}
 	
 	@Test
@@ -192,6 +192,24 @@ public class TestPaymentPanel extends AbstractSeleniumTestcase {
 	@Test
 	public void testFullExample() throws PaymentException {
 		Payment response = mpay24.paymentPage(getTestPaymentRequest(), getCustomerWithAddress(), getShoppingCart(), getStylingOptions(Template.MOBILE));
+		assertSuccessfullResponse(response);
+	}
+
+	@Test
+	public void testFullExampleWithTemplateStyleWeb() throws PaymentException {
+		Payment response = mpay24.paymentPage(getTestPaymentRequest(), getCustomerWithAddress(), getShoppingCart(), getStylingOptions(Template.MOBILE), "WEB");
+		assertSuccessfullResponse(response);
+	}
+
+	@Test
+	public void testFullExampleWithTemplateStyleDefault() throws PaymentException {
+		Payment response = mpay24.paymentPage(getTestPaymentRequest(), getCustomerWithAddress(), getShoppingCart(), getStylingOptions(Template.MOBILE), "DEFAULT");
+		assertSuccessfullResponse(response);
+	}
+
+	@Test
+	public void testFullExampleWithTemplateStyleUnknown() throws PaymentException {
+		Payment response = mpay24.paymentPage(getTestPaymentRequest(), getCustomerWithAddress(), getShoppingCart(), getStylingOptions(Template.MOBILE), "unknown");
 		assertSuccessfullResponse(response);
 	}
 

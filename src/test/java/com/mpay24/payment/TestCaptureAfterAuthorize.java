@@ -9,12 +9,10 @@ import java.text.ParseException;
 import org.apache.log4j.Logger;
 import org.junit.Test;
 
-import com.mpay24.payment.Mpay24.Environment;
 import com.mpay24.payment.data.Payment;
 
 public class TestCaptureAfterAuthorize extends AbstractTestCase {
 	public final static Logger log = Logger.getLogger(TestCaptureAfterAuthorize.class);
-	protected Mpay24 mpay24 = new Mpay24("93975", getPassword(), Environment.TEST);
 
 	@Test
 	public void testCapturePayment() throws ParseException, PaymentException {

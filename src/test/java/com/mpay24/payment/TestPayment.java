@@ -65,6 +65,7 @@ public class TestPayment extends AbstractTestCase {
 	}
 
 	@Test
+	@Ignore("Atos is not supported anymore - test case may be removed")
 	public void testDirectDebitAtosPayment() throws PaymentException {
 		Payment response = mpay24.payment(getTestPaymentRequest("987654321", 1l), getDirectDebitTestData(Brand.ATOS));
 
@@ -138,6 +139,7 @@ public class TestPayment extends AbstractTestCase {
 	}
 
 	@Test
+	@Ignore
 	public void testGiropayPayment() throws ParseException, PaymentException {
 		Payment response = mpay24.payment(getTestPaymentRequest("555", 1l), getGiropayData());
 
@@ -195,6 +197,7 @@ public class TestPayment extends AbstractTestCase {
 	}
 
 	@Test
+	@Ignore
 	public void testInstallmentBillpayPayment() throws ParseException, PaymentException {
 		Payment response = mpay24.payment(getTestPaymentRequest("666", 101l),
 						getInstallmentBillpayTestData(), getCustomerWithAddress(null));
