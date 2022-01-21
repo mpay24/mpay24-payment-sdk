@@ -6,7 +6,7 @@
 
 	<groupId>com.mpay24.payment</groupId>
 	<artifactId>mpay24-payment-sdk</artifactId>
-	<version>1.9.5.0</version>
+	<version>1.9.6.0</version>
 	<packaging>jar</packaging>
 
 	<name>${project.groupId}:${project.artifactId}</name>
@@ -174,9 +174,14 @@
 			<version>1.5.6.0</version>
 		</dependency>
 		<dependency>
-			<groupId>log4j</groupId>
-			<artifactId>log4j</artifactId>
-			<version>1.2.17</version>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-api</artifactId>
+			<version>2.17.1</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-core</artifactId>
+			<version>2.17.1</version>
 		</dependency>
 
 		<dependency>
@@ -187,9 +192,9 @@
 
 		<!-- Test dependencies -->
 		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<version>4.11</version>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter-api</artifactId>
+			<version>5.8.2</version>
 			<scope>test</scope>
 		</dependency>
 		<!-- UI Test dependencies Selenium -->

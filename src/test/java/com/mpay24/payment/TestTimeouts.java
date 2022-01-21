@@ -5,7 +5,8 @@ import static org.junit.Assert.assertNotNull;
 
 import java.text.ParseException;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.Test;
 
 import com.mpay24.payment.data.Payment;
@@ -13,7 +14,7 @@ import com.mpay24.payment.data.PaymentRequest;
 import com.mpay24.payment.type.DirectDebitPaymentType.Brand;
 
 public class TestTimeouts extends AbstractTestCase {
-	public final static Logger log = Logger.getLogger(TestTimeouts.class);
+	public final static Logger logger = LogManager.getLogger(TestTimeouts.class);
 
 	@Test
 	public void testVisaPayment() throws PaymentException, ParseException {

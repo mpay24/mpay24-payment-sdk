@@ -5,7 +5,8 @@ import static org.junit.Assert.assertNotNull;
 
 import java.text.ParseException;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -13,7 +14,7 @@ import com.mpay24.payment.data.Payment;
 import com.mpay24.payment.type.DirectDebitPaymentType.Brand;
 
 public class TestPayment extends AbstractTestCase {
-	public final static Logger log = Logger.getLogger(TestPayment.class);
+	public final static Logger logger = LogManager.getLogger(TestPayment.class);
 
 	@Test
 	public void testMaestroPayment() throws PaymentException, ParseException {

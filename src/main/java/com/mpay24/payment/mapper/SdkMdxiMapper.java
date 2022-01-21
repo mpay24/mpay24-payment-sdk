@@ -9,8 +9,6 @@ import javax.xml.bind.JAXBException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 
-import org.apache.log4j.Logger;
-
 import com.mpay.mdxi.AddressModeType;
 import com.mpay.mdxi.AddressType;
 import com.mpay.mdxi.AddressType.Country;
@@ -40,9 +38,11 @@ import com.mpay24.payment.data.PaymentType;
 import com.mpay24.payment.data.ShoppingCart;
 import com.mpay24.payment.data.ShoppingCartItem;
 import com.mpay24.payment.data.StylingOptions;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class SdkMdxiMapper {
-	public final static Logger logger = Logger.getLogger(SdkMdxiMapper.class);
+	public final static Logger logger = LogManager.getLogger(SdkMdxiMapper.class);
 
 	private XmlMarshaller xmlMarshaller = new XmlMarshaller();
 

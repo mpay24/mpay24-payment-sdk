@@ -19,7 +19,6 @@ import org.apache.cxf.endpoint.Client;
 import org.apache.cxf.frontend.ClientProxy;
 import org.apache.cxf.interceptor.LoggingOutInterceptor;
 import org.apache.cxf.transport.http.HTTPConduit;
-import org.apache.log4j.Logger;
 
 import com.mpay.soap.client.ClearingDetails;
 import com.mpay.soap.client.ETP;
@@ -45,14 +44,16 @@ import com.mpay24.payment.data.Refund;
 import com.mpay24.payment.data.State;
 import com.mpay24.payment.data.Token;
 import com.mpay24.payment.data.TokenRequest;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class SoapCommunication {
-	public final static Logger logger = Logger.getLogger(SoapCommunication.class);
+	public final static Logger logger = LogManager.getLogger(SoapCommunication.class);
 
 	private static final String USERNAME_PREFIX = "u";
-	private String merchantId;
-	private String password;
-	private Environment mode;
+	private final String merchantId;
+	private final String password;
+	private final Environment mode;
 
 	public SoapCommunication(String merchantId, String password, Environment mode) {
 		super();

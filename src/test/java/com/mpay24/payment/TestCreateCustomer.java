@@ -6,25 +6,24 @@ import static org.junit.Assert.assertNotNull;
 import java.text.ParseException;
 import java.util.List;
 
-import org.apache.log4j.Logger;
-import org.junit.After;
+import com.mpay24.payment.data.Customer;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.Test;
 
 import com.mpay24.payment.data.PaymentData;
 import com.mpay24.payment.type.DirectDebitPaymentType.Brand;
 
 public class TestCreateCustomer extends AbstractTestCase {
-	public final static Logger log = Logger.getLogger(TestCreateCustomer.class);
+	public final static Logger logger = LogManager.getLogger(TestCreateCustomer.class);
 
-	@After
-	public void tearDown() throws Exception {
-	}
-	
 	@Test
 	public void testCreateCreditCardCustomerWithoutAddress() throws ParseException, PaymentException {
 		String customerId = "12345678987622";
 		deleteProfileForTest(customerId);
-		mpay24.createCustomer(getCustomer(customerId, "Xenia Wiesbauer"), getVisaTestData());
+		Customer customer = getCustomer(customerId, "Xenia Wiesbauer");
+		customer.setBirthdate(formatDate("1970-01-31"));
+		mpay24.createCustomer(customer, getVisaTestData());
 		List<PaymentData> storedPaymentDataList = mpay24.listCustomers(customerId, null, null, null);
 		assertNotNull(storedPaymentDataList);
 		assertEquals(1, storedPaymentDataList.size());

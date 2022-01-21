@@ -6,13 +6,14 @@ import static org.junit.Assert.assertNotNull;
 import java.math.BigDecimal;
 import java.text.ParseException;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.Test;
 
 import com.mpay24.payment.data.Payment;
 
 public class TestCapture extends AbstractTestCase {
-	public final static Logger log = Logger.getLogger(TestCapture.class);
+	public final static Logger logger = LogManager.getLogger(TestCapture.class);
 
 	@Test
 	public void testCapturePayment() throws ParseException, PaymentException {

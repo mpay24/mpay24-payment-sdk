@@ -9,7 +9,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.After;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -26,7 +27,7 @@ import com.mpay24.payment.type.RecurringCreditCardPaymentType;
 import com.mpay24.payment.type.RecurringDirectDebitPaymentType;
 
 public class TestRecurringPayments extends AbstractSeleniumTestcase {
-	public final static Logger log = Logger.getLogger(TestRecurringPayments.class);
+	public final static Logger logger = LogManager.getLogger(TestRecurringPayments.class);
 
 	@After
 	public void tearDown() throws Exception {

@@ -5,7 +5,8 @@ import java.math.BigInteger;
 import java.util.Date;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import com.mpay.soap.client.Address;
 import com.mpay.soap.client.Order;
@@ -28,19 +29,19 @@ import com.mpay24.payment.type.PaymentTypeData;
 
 public class Mpay24 {
 
-	public final static Logger logger = Logger.getLogger(Mpay24.class);
+	public final static Logger logger = LogManager.getLogger(Mpay24.class);
 
-	private SdkApiObjectMapper mapper = new SdkApiObjectMapper();
-	private SdkMdxiMapper mdxiMapper = new SdkMdxiMapper();
-	private SoapCommunication soapCommunication;
+	private final SdkApiObjectMapper mapper = new SdkApiObjectMapper();
+	private final SdkMdxiMapper mdxiMapper = new SdkMdxiMapper();
+	private final SoapCommunication soapCommunication;
 
 	public enum Environment {
 		INTEGRATION("https://it.mpay24.com/app/bin/etpproxy_v15", "https://it.mpay24.com/soap/etp/1.5/ETP.wsdl"), 
 		TEST("https://test.mpay24.com/app/bin/etpproxy_v15", "https://test.mpay24.com/soap/etp/1.5/ETP.wsdl"), 
 		PRODUCTION("https://www.mpay24.com/app/bin/etpproxy_v15", "https://www.mpay24.com/soap/etp/1.5/ETP.wsdl");
 
-		private String endpoint;
-		private String wsdlUrl;
+		private final String endpoint;
+		private final String wsdlUrl;
 
 		Environment(String endpoint, String wsdlUrl) {
 			this.endpoint = endpoint;

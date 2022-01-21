@@ -7,7 +7,8 @@ import static org.junit.Assert.assertNull;
 import java.text.ParseException;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.After;
 import org.junit.Test;
 import org.openqa.selenium.By;
@@ -21,7 +22,7 @@ import com.mpay24.payment.data.PaymentRequest;
 import com.mpay24.payment.data.Token;
 
 public class TestCreateCustomerVerified extends AbstractSeleniumTestcase {
-	public final static Logger log = Logger.getLogger(TestCreateCustomerVerified.class);
+	public final static Logger logger = LogManager.getLogger(TestCreateCustomerVerified.class);
 
 	@After
 	public void tearDown() throws Exception {
@@ -81,7 +82,7 @@ public class TestCreateCustomerVerified extends AbstractSeleniumTestcase {
 		RemoteWebDriver driver = openFirefoxAtUrl(token.getRedirectLocation());
 		driver.findElement(By.name("cardnumber")).sendKeys("4444333322221111");
 		driver.findElement(By.name("cardnumber")).sendKeys(Keys.TAB);
-		driver.findElement(By.id("expiry")).sendKeys("1220");
+		driver.findElement(By.id("expiry")).sendKeys("1225");
 		driver.findElement(By.id("expiry")).sendKeys(Keys.TAB);
 		driver.findElement(By.name("cvc")).sendKeys("123");
 		driver.findElement(By.name("cvc")).sendKeys(Keys.TAB);
@@ -117,7 +118,7 @@ public class TestCreateCustomerVerified extends AbstractSeleniumTestcase {
 		RemoteWebDriver driver = openFirefoxAtUrl(token.getRedirectLocation());
 		driver.findElement(By.name("cardnumber")).sendKeys("4444333322221111");
 		driver.findElement(By.name("cardnumber")).sendKeys(Keys.TAB);
-		driver.findElement(By.id("expiry")).sendKeys("1220");
+		driver.findElement(By.id("expiry")).sendKeys("1225");
 		driver.findElement(By.id("expiry")).sendKeys(Keys.TAB);
 		driver.findElement(By.name("cvc")).sendKeys("123");
 		driver.findElement(By.name("cvc")).sendKeys(Keys.TAB);

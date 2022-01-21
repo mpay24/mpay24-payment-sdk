@@ -6,13 +6,14 @@ import static org.junit.Assert.assertTrue;
 import java.text.ParseException;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.Test;
 
 import com.mpay24.payment.data.Payment;
 
 public class TestUncapturedPayments extends AbstractTestCase {
-	public final static Logger log = Logger.getLogger(TestUncapturedPayments.class);
+	public final static Logger logger = LogManager.getLogger(TestUncapturedPayments.class);
 
 	@Test
 	public void testVisaPayment() throws ParseException, PaymentException {

@@ -3,7 +3,8 @@ package com.mpay24.payment;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.After;
 import org.junit.Test;
 import org.openqa.selenium.By;
@@ -18,7 +19,7 @@ import com.mpay24.payment.data.PaymentType;
 import com.mpay24.payment.data.StylingOptions.Template;
 
 public class TestPaymentPanel extends AbstractSeleniumTestcase {
-	public final static Logger log = Logger.getLogger(TestPaymentPanel.class);
+	public final static Logger logger = LogManager.getLogger(TestPaymentPanel.class);
 
 	@After
 	public void tearDown() throws Exception {
@@ -136,7 +137,7 @@ public class TestPaymentPanel extends AbstractSeleniumTestcase {
 		assertSuccessfullResponse(response);
 		
 		RemoteWebDriver driver = openFirefoxAtUrl(response.getRedirectLocation());
-		assertEquals("/app/checkout/css/DEFAULT/MODERN.css?v1", removeDomain(driver.findElement(By.xpath("//head/link[@rel='stylesheet']")).getAttribute("href")));
+		assertEquals("/app/checkout/css/DEFAULT/DEFAULT.css?v3", removeDomain(driver.findElement(By.xpath("//head/link[@rel='stylesheet']")).getAttribute("href")));
 	}
 
 	@Test
@@ -145,7 +146,7 @@ public class TestPaymentPanel extends AbstractSeleniumTestcase {
 		assertSuccessfullResponse(response);
 		
 		RemoteWebDriver driver = openFirefoxAtUrl(response.getRedirectLocation());
-		assertEquals("/app/checkout/css/DEFAULT/MODERN.css?v1", removeDomain(driver.findElement(By.xpath("//head/link[@rel='stylesheet']")).getAttribute("href")));
+		assertEquals("/app/checkout/css/DEFAULT/DEFAULT.css?v3", removeDomain(driver.findElement(By.xpath("//head/link[@rel='stylesheet']")).getAttribute("href")));
 	}
 	
 	@Test

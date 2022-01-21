@@ -36,7 +36,7 @@ public class TestCreateCustomerViaToken extends AbstractSeleniumTestcase {
 		RemoteWebDriver driver = openFirefoxAtUrl(token.getRedirectLocation());
 		driver.findElement(By.name("cardnumber")).sendKeys("4444333322221111");
 		driver.findElement(By.name("cardnumber")).sendKeys(Keys.TAB);
-		driver.findElement(By.id("expiry")).sendKeys("1220");
+		driver.findElement(By.id("expiry")).sendKeys("1225");
 		driver.findElement(By.id("expiry")).sendKeys(Keys.TAB);
 		driver.findElement(By.name("cvc")).sendKeys("123");
 		driver.findElement(By.name("cvc")).sendKeys(Keys.TAB);

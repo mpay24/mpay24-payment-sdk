@@ -6,6 +6,8 @@ import static org.junit.Assert.assertNotNull;
 import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -200,6 +202,16 @@ public abstract class AbstractTestCase {
 		} catch (ParseException e) {
 			return null;
 		}
+	}
+
+	protected Date formatDate(String dateString) {
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+		LocalDate date = LocalDate.parse(dateString, formatter);
+		return convertToDate(date);
+	}
+
+	public Date convertToDate(LocalDate dateToConvert) {
+		return java.sql.Date.valueOf(dateToConvert);
 	}
 
 

@@ -6,7 +6,8 @@ import static org.junit.Assert.assertNotNull;
 import java.math.BigDecimal;
 import java.text.ParseException;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.Test;
 
 import com.mpay.soap.client.Status;
@@ -15,7 +16,7 @@ import com.mpay24.payment.data.Refund;
 import com.mpay24.payment.data.State;
 
 public class TestRefund extends AbstractTestCase {
-	public final static Logger log = Logger.getLogger(TestRefund.class);
+	public final static Logger logger = LogManager.getLogger(TestRefund.class);
 
 	@Test
 	public void testRefundPaymentWithPaymentObject() throws ParseException, PaymentException {
