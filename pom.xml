@@ -10,7 +10,7 @@
 	<packaging>jar</packaging>
 
 	<name>${project.groupId}:${project.artifactId}</name>
-	<description>mpay24 SDK for Java. Allows easy access to the mpay24 system.</description>
+	<description>mPAY24 SDK for Java. Allows easy access to the mPAY24 system.</description>
 	<url>https://docs.mpay24.com</url>
 
 	<properties>
@@ -35,9 +35,9 @@
 	</developers>
 
 	<scm>
-		<connection>scm:svn:http://vcs1.mpay24.local/svn/development/java/sdk/trunk/payment-sdk</connection>
-		<developerConnection>scm:svn:http://vcs1.mpay24.local/svn/development/java/sdk/trunk/payment-sdk</developerConnection>
-		<url>http://vcs1.mpay24.local/svn/development/java/sdk/trunk/payment-sdk</url>
+		<connection>scm:git:https://github.com/mpay24/mpay24-payment-sdk.git</connection>
+		<developerConnection>scm:git:https://github.com/mpay24/mpay24-payment-sdk.git</developerConnection>
+		<url>https://github.com/mpay24/mpay24-payment-sdk.git</url>
 	</scm>
 
 	<distributionManagement>
@@ -65,22 +65,22 @@
 	<build>
 		<plugins>
 			<!-- OSGI Bundle Plugin -->
-			<!-- plugin> <groupId>org.apache.maven.plugins</groupId> <artifactId>maven-jar-plugin</artifactId> 
-				<configuration> <archive> <manifestFile>src/main/resources/META-INF/MANIFEST.MF</manifestFile> 
-				</archive> </configuration> </plugin> <plugin> <groupId>org.apache.felix</groupId> 
-				<artifactId>maven-bundle-plugin</artifactId> <version>2.3.6</version> <extensions>true</extensions> 
-				<configuration> <manifestLocation>src/main/resources/META-INF</manifestLocation> 
-				<excludeDependencies>${maven.bundleplugin.exclude.dependencies}</excludeDependencies> 
-				<instructions> <Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName> 
-				<Bundle-Name>${project.name}</Bundle-Name> <Bundle-Version>${project.version}</Bundle-Version> 
-				<Bundle-Activator></Bundle-Activator> <Import-Package>*</Import-Package> 
-				<Export-Package>*</Export-Package> <Private-Package></Private-Package> <Web-ContextPath></Web-ContextPath> 
-				<Webapp-Context></Webapp-Context> <Bundle-ClassPath></Bundle-ClassPath> <Embed-Dependency></Embed-Dependency> 
-				<Embed-Directory></Embed-Directory> <Embed-Transitive></Embed-Transitive> 
-				</instructions> <supportedProjectTypes> <supportedProjectType>jar</supportedProjectType> 
-				<supportedProjectType>bundle</supportedProjectType> <supportedProjectType>war</supportedProjectType> 
-				</supportedProjectTypes> </configuration> <executions> <execution> <id>bundle-manifest</id> 
-				<phase>process-classes</phase> <goals> <goal>manifest</goal> </goals> </execution> 
+			<!-- plugin> <groupId>org.apache.maven.plugins</groupId> <artifactId>maven-jar-plugin</artifactId>
+				<configuration> <archive> <manifestFile>src/main/resources/META-INF/MANIFEST.MF</manifestFile>
+				</archive> </configuration> </plugin> <plugin> <groupId>org.apache.felix</groupId>
+				<artifactId>maven-bundle-plugin</artifactId> <version>2.3.6</version> <extensions>true</extensions>
+				<configuration> <manifestLocation>src/main/resources/META-INF</manifestLocation>
+				<excludeDependencies>${maven.bundleplugin.exclude.dependencies}</excludeDependencies>
+				<instructions> <Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
+				<Bundle-Name>${project.name}</Bundle-Name> <Bundle-Version>${project.version}</Bundle-Version>
+				<Bundle-Activator></Bundle-Activator> <Import-Package>*</Import-Package>
+				<Export-Package>*</Export-Package> <Private-Package></Private-Package> <Web-ContextPath></Web-ContextPath>
+				<Webapp-Context></Webapp-Context> <Bundle-ClassPath></Bundle-ClassPath> <Embed-Dependency></Embed-Dependency>
+				<Embed-Directory></Embed-Directory> <Embed-Transitive></Embed-Transitive>
+				</instructions> <supportedProjectTypes> <supportedProjectType>jar</supportedProjectType>
+				<supportedProjectType>bundle</supportedProjectType> <supportedProjectType>war</supportedProjectType>
+				</supportedProjectTypes> </configuration> <executions> <execution> <id>bundle-manifest</id>
+				<phase>process-classes</phase> <goals> <goal>manifest</goal> </goals> </execution>
 				</executions> </plugin -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -135,7 +135,7 @@
 			</plugin>
 		</plugins>
 
-		<!--This plugin's configuration is used to store Eclipse m2e settings only. 
+		<!--This plugin's configuration is used to store Eclipse m2e settings only.
 			It has no influence on the Maven build itself. -->
 		<pluginManagement>
 			<plugins>
