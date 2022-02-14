@@ -1,4 +1,4 @@
-# mpay24-java
+# mpay24-payment-sdk
 Offical mPAY24 Java Payment SDK
 
 ## Requirements
