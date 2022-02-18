@@ -64,6 +64,41 @@ public class TestPaymentPanel extends AbstractSeleniumTestcase {
 	}
 
 	@Test
+	public void testRestrictPaymentTypeApplePay() throws PaymentException {
+		Payment response = mpay24.paymentPage(getTestPaymentRequest(getTestPaymentInclusionList(PaymentType.CreditCard, PaymentType.ApplePay)));
+		assertSuccessfullResponse(response);
+
+		RemoteWebDriver driver = openFirefoxAtUrl(response.getRedirectLocation());
+		assertEquals("Kartenzahlung", driver.findElementById("ptype_desc").getText());
+
+		WebElement buttons = driver.findElementById("buttons");
+		WebElement applePayButton = buttons.findElement(By.xpath("div[@class='apple-pay']/button"));
+		assertEquals("button", applePayButton.getAttribute("type"));
+	}
+
+	@Test
+	public void testRestrictPaymentTypeGooglePay() throws PaymentException {
+		Payment response = mpay24.paymentPage(getTestPaymentRequest(getTestPaymentInclusionList(PaymentType.CreditCard, PaymentType.GooglePay)));
+		assertSuccessfullResponse(response);
+
+		RemoteWebDriver driver = openFirefoxAtUrl(response.getRedirectLocation());
+		assertEquals("Kartenzahlung", driver.findElementById("ptype_desc").getText());
+
+		WebElement googlePayButton = driver.findElementById("googlepay");
+		WebElement button = googlePayButton.findElement(By.xpath("div[@class='gpay-button-fill']/button"));
+		assertEquals("button", button.getAttribute("type"));
+	}
+
+	@Test
+	public void testRestrictPaymentTypeELVSecure() throws PaymentException {
+		Payment response = mpay24.paymentPage(getTestPaymentRequest(getTestPaymentInclusionList(PaymentType.ELVSecure)));
+		assertSuccessfullResponse(response);
+
+		RemoteWebDriver driver = openFirefoxAtUrl(response.getRedirectLocation());
+		assertEquals("Bankeinzug", driver.findElementById("ptype_desc").getText());
+	}
+
+	@Test
 	public void testRestrictPaymenttypeInvoice() throws PaymentException {
 		Payment response = mpay24.paymentPage(getTestPaymentRequest(getTestPaymentInclusionList(PaymentType.DirectDebit)));
 		assertSuccessfullResponse(response);

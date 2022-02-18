@@ -51,7 +51,15 @@ public enum PaymentType {
 
 	Installment_Klarna("KLARNA", "HP", 122),
 
-	Sofort("SOFORT", 140), MasterPass("MASTERPASS", 150);
+	Sofort("SOFORT", 140),
+
+	MasterPass("MASTERPASS", 150),
+
+	ELVSecure("ELVSECURE",170),
+
+	ApplePay("APPLEPAY", null),
+
+	GooglePay("GOOGLEPAY", null);
 
 	private String paymentType;
 	private String brand;
