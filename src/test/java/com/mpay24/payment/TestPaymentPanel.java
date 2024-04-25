@@ -18,6 +18,8 @@ import com.mpay24.payment.data.PaymentRequest.Language;
 import com.mpay24.payment.data.PaymentType;
 import com.mpay24.payment.data.StylingOptions.Template;
 
+import java.time.Duration;
+
 public class TestPaymentPanel extends AbstractSeleniumTestcase {
 	public final static Logger logger = LogManager.getLogger(TestPaymentPanel.class);
 
@@ -31,7 +33,7 @@ public class TestPaymentPanel extends AbstractSeleniumTestcase {
 		Payment response = mpay24.paymentPage(getTestPaymentRequest());
 		assertSuccessfullResponse(response);
 		RemoteWebDriver driver = openFirefoxAtUrl(response.getRedirectLocation());
-		WebElement element = driver.findElementById("CC");
+		WebElement element = driver.findElement(By.id("CC"));
 		assertNotNull(element.findElement(By.xpath("//input[@name='selCC|MASTERCARD']")));
 		assertNotNull(element.findElement(By.xpath("//input[@name='selCC|VISA']")));
 	}
@@ -60,7 +62,7 @@ public class TestPaymentPanel extends AbstractSeleniumTestcase {
 		assertSuccessfullResponse(response);
 
 		RemoteWebDriver driver = openFirefoxAtUrl(response.getRedirectLocation());
-		assertEquals("Kartenzahlung", driver.findElementById("ptype_desc").getText());
+		assertEquals("Kartenzahlung", driver.findElement(By.id("ptype_desc")).getText());
 	}
 
 	@Test
@@ -69,9 +71,9 @@ public class TestPaymentPanel extends AbstractSeleniumTestcase {
 		assertSuccessfullResponse(response);
 
 		RemoteWebDriver driver = openFirefoxAtUrl(response.getRedirectLocation());
-		assertEquals("Kartenzahlung", driver.findElementById("ptype_desc").getText());
+		assertEquals("Kartenzahlung", driver.findElement(By.id("ptype_desc")).getText());
 
-		WebElement buttons = driver.findElementById("buttons");
+		WebElement buttons = driver.findElement(By.id("buttons"));
 		WebElement applePayButton = buttons.findElement(By.xpath("div[@class='apple-pay']/button"));
 		assertEquals("button", applePayButton.getAttribute("type"));
 	}
@@ -82,9 +84,9 @@ public class TestPaymentPanel extends AbstractSeleniumTestcase {
 		assertSuccessfullResponse(response);
 
 		RemoteWebDriver driver = openFirefoxAtUrl(response.getRedirectLocation());
-		assertEquals("Kartenzahlung", driver.findElementById("ptype_desc").getText());
+		assertEquals("Kartenzahlung", driver.findElement(By.id("ptype_desc")).getText());
 
-		WebElement googlePayButton = driver.findElementById("googlepay");
+		WebElement googlePayButton = driver.findElement(By.id("googlepay"));
 		WebElement button = googlePayButton.findElement(By.xpath("div[@class='gpay-button-fill']/button"));
 		assertEquals("button", button.getAttribute("type"));
 	}
@@ -95,7 +97,7 @@ public class TestPaymentPanel extends AbstractSeleniumTestcase {
 		assertSuccessfullResponse(response);
 
 		RemoteWebDriver driver = openFirefoxAtUrl(response.getRedirectLocation());
-		assertEquals("Bankeinzug", driver.findElementById("ptype_desc").getText());
+		assertEquals("Bankeinzug", driver.findElement(By.id("ptype_desc")).getText());
 	}
 
 	@Test
@@ -104,7 +106,7 @@ public class TestPaymentPanel extends AbstractSeleniumTestcase {
 		assertSuccessfullResponse(response);
 
 		RemoteWebDriver driver = openFirefoxAtUrl(response.getRedirectLocation());
-		assertEquals("Lastschrift", driver.findElementById("ptype_desc").getText());
+		assertEquals("Lastschrift", driver.findElement(By.id("ptype_desc")).getText());
 	}
 
 	@Test
@@ -119,7 +121,7 @@ public class TestPaymentPanel extends AbstractSeleniumTestcase {
 		Payment response = mpay24.paymentPage(getTestPaymentRequest(120.0, null), getTestShoppingCart());
 		assertSuccessfullResponse(response);
 		RemoteWebDriver driver = openFirefoxAtUrl(response.getRedirectLocation());
-		WebElement element = driver.findElementById("cart");
+		WebElement element = driver.findElement(By.id("cart"));
 		assertEquals("Rabatt:", element.findElement(By.xpath("tfoot/tr[1]/th")).getText());
 		assertEquals("-10,00", element.findElement(By.xpath("tfoot/tr[1]/td")).getText());
 
@@ -143,7 +145,7 @@ public class TestPaymentPanel extends AbstractSeleniumTestcase {
 		assertSuccessfullResponse(response);
 		RemoteWebDriver driver = openFirefoxAtUrl(response.getRedirectLocation());
 		
-		WebElement element = driver.findElementById("cart");
+		WebElement element = driver.findElement(By.id("cart"));
 		assertEquals("Rabatt:", element.findElement(By.xpath("tfoot/tr[1]/th")).getText());
 	}
 	
@@ -153,7 +155,7 @@ public class TestPaymentPanel extends AbstractSeleniumTestcase {
 		assertSuccessfullResponse(response);
 		
 		RemoteWebDriver driver = openFirefoxAtUrl(response.getRedirectLocation());
-		WebElement element = driver.findElementById("cart");
+		WebElement element = driver.findElement(By.id("cart"));
 		assertEquals("No.", element.findElement(By.xpath("thead/tr[1]/th[1]")).getText());
 		assertEquals("Prod. No.", element.findElement(By.xpath("thead/tr[1]/th[2]")).getText());
 		assertEquals("Product Name", element.findElement(By.xpath("thead/tr[1]/th[3]")).getText());
@@ -196,7 +198,7 @@ public class TestPaymentPanel extends AbstractSeleniumTestcase {
 		
 		RemoteWebDriver driver = openFirefoxAtUrl(response.getRedirectLocation());
 		driver.findElement(By.name("selCC|VISA")).click();
-		WebDriverWait wait = new WebDriverWait(driver, 20);
+		WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
 		wait.until(ExpectedConditions.elementToBeClickable(By.id("cardnumber"))); 
 		assertEquals("Testperson-de Approved", driver.findElement(By.name("BillingAddr/Name")).getAttribute("value"));
 		assertEquals("Hellersbergstraße 14", driver.findElement(By.name("BillingAddr/Street")).getAttribute("value"));
@@ -214,7 +216,7 @@ public class TestPaymentPanel extends AbstractSeleniumTestcase {
 		
 		RemoteWebDriver driver = openFirefoxAtUrl(response.getRedirectLocation());
 		driver.findElement(By.name("selPAYPAL|PAYPAL")).click();
-		WebDriverWait wait = new WebDriverWait(driver, 20);
+		WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
 		wait.until(ExpectedConditions.elementToBeClickable(By.name("BillingAddr/Street"))); 
 		assertEquals("Testperson-de Approved", driver.findElement(By.name("BillingAddr/Name")).getAttribute("value"));
 		assertEquals("Hellersbergstraße 14", driver.findElement(By.name("BillingAddr/Street")).getAttribute("value"));

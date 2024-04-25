@@ -41,7 +41,7 @@ public class AbstractSeleniumTestcase extends AbstractTestCase {
 
 	protected void assertUIElement(String url, String id, String value) {
 		RemoteWebDriver driver = openFirefoxAtUrl(url);
-		assertEquals(value, driver.findElementById(id).getText());
+		assertEquals(value, driver.findElement(By.id(id)).getText());
 	}
 
 	protected void assertNotExistent(RemoteWebDriver driver, By by) {
