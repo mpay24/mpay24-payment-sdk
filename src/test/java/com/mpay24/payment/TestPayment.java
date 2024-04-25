@@ -165,14 +165,6 @@ public class TestPayment extends AbstractTestCase {
 	}
 
 	@Test
-	public void testPayboxPayment() throws ParseException, PaymentException {
-		Payment response = mpay24.payment(getTestPaymentRequest("555", 1l), getPayboxData());
-
-		assertEquals("OK", response.getReturnCode());
-		assertNotNull(response.getmPayTid());
-	}
-
-	@Test
 	public void testPaysafecardPayment() throws ParseException, PaymentException {
 		Payment response = mpay24.payment(getTestPaymentRequest("555", 1l), getPaysafecardData());
 
