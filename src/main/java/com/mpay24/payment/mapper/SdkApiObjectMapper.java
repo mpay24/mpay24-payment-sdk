@@ -24,7 +24,6 @@ import com.mpay.soap.client.PaymentGIROPAY;
 import com.mpay.soap.client.PaymentKLARNA;
 import com.mpay.soap.client.PaymentMAESTRO;
 import com.mpay.soap.client.PaymentPAYPAL;
-import com.mpay.soap.client.PaymentPB;
 import com.mpay.soap.client.PaymentTOKEN;
 import com.mpay.soap.client.PaymentType;
 import com.mpay24.payment.data.Customer;
@@ -37,7 +36,6 @@ import com.mpay24.payment.type.DirectDebitPaymentType;
 import com.mpay24.payment.type.InvoicePaymentType;
 import com.mpay24.payment.type.InvoicePaymentType.Brand;
 import com.mpay24.payment.type.OnlineBankingPaymentType;
-import com.mpay24.payment.type.PayboxPaymentType;
 import com.mpay24.payment.type.PaymentTypeData;
 import com.mpay24.payment.type.PaypalPaymentType;
 import com.mpay24.payment.type.PaysafecardPaymentType;
@@ -90,12 +88,12 @@ public class SdkApiObjectMapper {
 
 	private PaymentData mapPaymentData(DirectDebitPaymentType paymentType, String profileId) {
 		PaymentDataELV paymentData = new PaymentDataELV();
-		paymentData.setBic(paymentType.getBic());
+		paymentData.setBic(objectFactory.createPaymentDataELVBic(paymentType.getBic()));
 		paymentData.setBrand(paymentType.getBrand().toString());
-		paymentData.setDateOfSignature(paymentType.getDateOfSignature());
+		paymentData.setDateOfSignature(objectFactory.createPaymentDataELVDateOfSignature(CalendarConverter.asXMLGregorianCalendar(paymentType.getDateOfSignature())));
 		paymentData.setIban(paymentType.getIban());
-		paymentData.setMandateID(paymentType.getMandateID());
-		paymentData.setProfileID(profileId);
+		paymentData.setMandateID(objectFactory.createPaymentDataELVMandateID(paymentType.getMandateID()));
+		paymentData.setProfileID(objectFactory.createPaymentDataProfileID(profileId));
 		return paymentData;
 	}
 
@@ -104,14 +102,14 @@ public class SdkApiObjectMapper {
 		paymentData.setBrand(paymentType.getBrand().toString());
 		paymentData.setExpiry(getExpiredateAsLong(paymentType.getExpiry()));
 		paymentData.setIdentifier(paymentType.getPan());
-		paymentData.setProfileID(profileId);
+		paymentData.setProfileID(objectFactory.createPaymentDataProfileID(profileId));
 		return paymentData;
 	}
 
 	private PaymentData mapPaymentData(TokenPaymentType paymentType, String profileId) {
 		PaymentDataTOKEN paymentData = new PaymentDataTOKEN();
 		paymentData.setToken(paymentType.getToken());
-		paymentData.setProfileID(profileId);
+		paymentData.setProfileID(objectFactory.createPaymentDataProfileID(profileId));
 		return paymentData;
 	}
 
@@ -128,8 +126,6 @@ public class SdkApiObjectMapper {
 			return mapPaymentSystemData(paymentRequest, (OnlineBankingPaymentType) paymentType);
 		} else if (paymentType instanceof PaypalPaymentType) {
 			return mapPaymentSystemData(paymentRequest, (PaypalPaymentType) paymentType);
-		} else if (paymentType instanceof PayboxPaymentType) {
-			return mapPaymentSystemData(paymentRequest, (PayboxPaymentType) paymentType);
 		} else if (paymentType instanceof RecurringCreditCardPaymentType) {
 			return mapPaymentSystemData(paymentRequest, (RecurringCreditCardPaymentType) paymentType);
 		} else if (paymentType instanceof RecurringDirectDebitPaymentType) {
@@ -149,10 +145,10 @@ public class SdkApiObjectMapper {
 		if (customer == null && shoppingCart == null)
 			return null;
 		Order order = new Order();
-		order.setBilling(mapCustomer(customer));
-		order.setShoppingCart(mapShoppingCart(shoppingCart));
-		order.setDescription(paymentRequest.getDescription());
-		order.setUserField(paymentRequest.getUserField());
+		order.setBilling(objectFactory.createOrderBilling(mapCustomer(customer)));
+		order.setShoppingCart(objectFactory.createOrderShoppingCart(mapShoppingCart(shoppingCart)));
+		order.setDescription(objectFactory.createOrderDescription(paymentRequest.getDescription()));
+		order.setUserField(objectFactory.createOrderUserField(paymentRequest.getUserField()));
 		return order;
 	}
 
@@ -160,19 +156,19 @@ public class SdkApiObjectMapper {
 		if (shoppingCart == null)
 			return null;
 		com.mpay.soap.client.ShoppingCart soapShoppingCart = new com.mpay.soap.client.ShoppingCart();
-		soapShoppingCart.setDiscount(convertBigDecimalToInteger(shoppingCart.getDiscount()));
-		soapShoppingCart.setShippingCosts(convertBigDecimalToInteger(shoppingCart.getShippingCost()));
-		soapShoppingCart.setShippingTax(convertBigDecimalToInteger(shoppingCart.getShippingCostTax()));
-		soapShoppingCart.setTax(convertBigDecimalToInteger(shoppingCart.getTax()));
+		soapShoppingCart.setDiscount(objectFactory.createShoppingCartDiscount(convertBigDecimalToInteger(shoppingCart.getDiscount())));
+		soapShoppingCart.setShippingCosts(objectFactory.createShoppingCartShippingCosts(convertBigDecimalToInteger(shoppingCart.getShippingCost())));
+		soapShoppingCart.setShippingTax(objectFactory.createShoppingCartShippingTax(convertBigDecimalToInteger(shoppingCart.getShippingCostTax())));
+		soapShoppingCart.setTax(objectFactory.createShoppingCartTax(convertBigDecimalToInteger(shoppingCart.getTax())));
 		if (shoppingCart.getItemList() != null) {
 			for (ShoppingCartItem shoppingCartItem : shoppingCart.getItemList()) {
 				Item item = new Item();
 				item.setAmount(convertBigDecimalToInteger(shoppingCartItem.getAmount()));
-				item.setDescription(shoppingCartItem.getDescription());
-				item.setNumber(shoppingCartItem.getSequenceId());
-				item.setProductNr(shoppingCartItem.getProductCode());
-				item.setQuantity(shoppingCartItem.getQuantity());
-				item.setTax(convertBigDecimalToInteger(shoppingCartItem.getTax()));
+				item.setDescription(objectFactory.createItemDescription(shoppingCartItem.getDescription()));
+				item.setNumber(objectFactory.createItemNumber(shoppingCartItem.getSequenceId()));
+				item.setProductNr(objectFactory.createItemProductNr(shoppingCartItem.getProductCode()));
+				item.setQuantity(objectFactory.createItemQuantity(shoppingCartItem.getQuantity()));
+				item.setTax(objectFactory.createItemTax(convertBigDecimalToInteger(shoppingCartItem.getTax())));
 				soapShoppingCart.getItem().add(item);
 			}
 
@@ -200,19 +196,19 @@ public class SdkApiObjectMapper {
 		if (paymentTypeData.getBrand() != null) {
 			payment.setBrand(paymentTypeData.getBrand().toString());
 		}
-		payment.setCvc(paymentTypeData.getCvc());
+		payment.setCvc(objectFactory.createPaymentCCCvc(paymentTypeData.getCvc()));
 		payment.setExpiry(getExpiredateAsLong(paymentTypeData.getExpiry()));
 		payment.setIdentifier(paymentTypeData.getPan());
-		payment.setUseProfile(paymentRequest.isSavePaymentData());
-		payment.setProfileID(paymentRequest.getStoredPaymentDataId());
-		payment.setTimeout(paymentRequest.getTimeoutSeconds());
+		payment.setUseProfile(objectFactory.createPaymentUseProfile(paymentRequest.isSavePaymentData()));
+		payment.setProfileID(objectFactory.createPaymentProfileID(paymentRequest.getStoredPaymentDataId()));
+		payment.setTimeout(objectFactory.createPaymentTimeout(paymentRequest.getTimeoutSeconds()));
 		setManualClearing(paymentRequest, payment);
 		return payment;
 	}
 
 	private void setManualClearing(PaymentRequest paymentRequest, Payment payment) {
 		if (paymentRequest.isCapture() != null) {
-			payment.setManualClearing(!paymentRequest.isCapture());
+			payment.setManualClearing(objectFactory.createPaymentManualClearing(!paymentRequest.isCapture()));
 		}
 	}
 
@@ -222,9 +218,9 @@ public class SdkApiObjectMapper {
 		payment.setCurrency(paymentRequest.getCurrency());
 		payment.setExpiry(getExpiredateAsLong(paymentTypeData.getExpiry()));
 		payment.setIdentifier(paymentTypeData.getPan());
-		payment.setUseProfile(paymentRequest.isSavePaymentData());
-		payment.setProfileID(paymentRequest.getStoredPaymentDataId());
-		payment.setTimeout(paymentRequest.getTimeoutSeconds());
+		payment.setUseProfile(objectFactory.createPaymentUseProfile(paymentRequest.isSavePaymentData()));
+		payment.setProfileID(objectFactory.createPaymentProfileID(paymentRequest.getStoredPaymentDataId()));
+		payment.setTimeout(objectFactory.createPaymentTimeout(paymentRequest.getTimeoutSeconds()));
 		setManualClearing(paymentRequest, payment);
 		return payment;
 	}
@@ -234,13 +230,13 @@ public class SdkApiObjectMapper {
 		payment.setAmount(convertBigDecimalToInteger(paymentRequest.getAmount()));
 		payment.setCurrency(paymentRequest.getCurrency());
 		payment.setIban(paymentTypeData.getIban());
-		payment.setBic(paymentTypeData.getBic());
-		payment.setMandateID(paymentTypeData.getMandateID());
-		payment.setDateOfSignature(paymentTypeData.getDateOfSignature());
+		payment.setBic(objectFactory.createPaymentELVBic(paymentTypeData.getBic()));
+		payment.setMandateID(objectFactory.createPaymentELVMandateID(paymentTypeData.getMandateID()));
+		payment.setDateOfSignature(objectFactory.createPaymentELVDateOfSignature(CalendarConverter.asXMLGregorianCalendar(paymentTypeData.getDateOfSignature())));
 		payment.setBrand(paymentTypeData.getBrand().toString());
-		payment.setUseProfile(paymentRequest.isSavePaymentData());
-		payment.setProfileID(paymentRequest.getStoredPaymentDataId());
-		payment.setTimeout(paymentRequest.getTimeoutSeconds());
+		payment.setUseProfile(objectFactory.createPaymentUseProfile(paymentRequest.isSavePaymentData()));
+		payment.setProfileID(objectFactory.createPaymentProfileID(paymentRequest.getStoredPaymentDataId()));
+		payment.setTimeout(objectFactory.createPaymentTimeout(paymentRequest.getTimeoutSeconds()));
 		setManualClearing(paymentRequest, payment);
 		return payment;
 	}
@@ -252,9 +248,9 @@ public class SdkApiObjectMapper {
 			payment.setBrand(paymentTypeData.getPaymentType().toString());
 			payment.setCurrency(paymentRequest.getCurrency());
 			paymentTypeData.setPaymentType(PaymentType.BILLPAY);
-			payment.setUseProfile(paymentRequest.isSavePaymentData());
-			payment.setProfileID(paymentRequest.getStoredPaymentDataId());
-			payment.setTimeout(paymentRequest.getTimeoutSeconds());
+			payment.setUseProfile(objectFactory.createPaymentUseProfile(paymentRequest.isSavePaymentData()));
+			payment.setProfileID(objectFactory.createPaymentProfileID(paymentRequest.getStoredPaymentDataId()));
+			payment.setTimeout(objectFactory.createPaymentTimeout(paymentRequest.getTimeoutSeconds()));
 			setManualClearing(paymentRequest, payment);
 			return payment;
 		} else {
@@ -262,12 +258,12 @@ public class SdkApiObjectMapper {
 			payment.setAmount(convertBigDecimalToInteger(paymentRequest.getAmount()));
 			payment.setBrand(paymentTypeData.getPaymentType().toString());
 			payment.setCurrency(paymentRequest.getCurrency());
-			payment.setPClass(paymentTypeData.getKlarnaPclass());
+			payment.setPClass(objectFactory.createPaymentKLARNAPClass(paymentTypeData.getKlarnaPclass()));
 			payment.setPersonalNumber(paymentTypeData.getKlarnaPersonalNumber());
 			paymentTypeData.setPaymentType(PaymentType.KLARNA);
-			payment.setUseProfile(paymentRequest.isSavePaymentData());
-			payment.setProfileID(paymentRequest.getStoredPaymentDataId());
-			payment.setTimeout(paymentRequest.getTimeoutSeconds());
+			payment.setUseProfile(objectFactory.createPaymentUseProfile(paymentRequest.isSavePaymentData()));
+			payment.setProfileID(objectFactory.createPaymentProfileID(paymentRequest.getStoredPaymentDataId()));
+			payment.setTimeout(objectFactory.createPaymentTimeout(paymentRequest.getTimeoutSeconds()));
 			setManualClearing(paymentRequest, payment);
 			return payment;
 		}
@@ -278,33 +274,33 @@ public class SdkApiObjectMapper {
 			PaymentEPS payment = new PaymentEPS();
 			payment.setAmount(convertBigDecimalToInteger(paymentRequest.getAmount()));
 			payment.setCurrency(paymentRequest.getCurrency());
-			payment.setBankID(paymentTypeData.getStuzzaBankId());
-			payment.setBic(paymentTypeData.getBic());
+			payment.setBankID(objectFactory.createPaymentEPSBankID(paymentTypeData.getStuzzaBankId()));
+			payment.setBic(objectFactory.createPaymentEPSBic(paymentTypeData.getBic()));
 			payment.setBrand(paymentTypeData.getBrand().toString());
-			payment.setUseProfile(paymentRequest.isSavePaymentData());
-			payment.setProfileID(paymentRequest.getStoredPaymentDataId());
-			payment.setTimeout(paymentRequest.getTimeoutSeconds());
+			payment.setUseProfile(objectFactory.createPaymentUseProfile(paymentRequest.isSavePaymentData()));
+			payment.setProfileID(objectFactory.createPaymentProfileID(paymentRequest.getStoredPaymentDataId()));
+			payment.setTimeout(objectFactory.createPaymentTimeout(paymentRequest.getTimeoutSeconds()));
 			setManualClearing(paymentRequest, payment);
 			return payment;
 		} else if (paymentTypeData.getBrand() == com.mpay24.payment.type.OnlineBankingPaymentType.Brand.EPS_STUZZA_BANK_SELECTION) {
 			PaymentEPS payment = new PaymentEPS();
 			payment.setAmount(convertBigDecimalToInteger(paymentRequest.getAmount()));
 			payment.setCurrency(paymentRequest.getCurrency());
-			payment.setBankID(paymentTypeData.getStuzzaBankId());
-			payment.setBic(paymentTypeData.getBic());
+			payment.setBankID(objectFactory.createPaymentEPSBankID(paymentTypeData.getStuzzaBankId()));
+			payment.setBic(objectFactory.createPaymentEPSBic(paymentTypeData.getBic()));
 			payment.setBrand("INTERNATIONAL");
-			payment.setUseProfile(paymentRequest.isSavePaymentData());
-			payment.setProfileID(paymentRequest.getStoredPaymentDataId());
-			payment.setTimeout(paymentRequest.getTimeoutSeconds());
+			payment.setUseProfile(objectFactory.createPaymentUseProfile(paymentRequest.isSavePaymentData()));
+			payment.setProfileID(objectFactory.createPaymentProfileID(paymentRequest.getStoredPaymentDataId()));
+			payment.setTimeout(objectFactory.createPaymentTimeout(paymentRequest.getTimeoutSeconds()));
 			setManualClearing(paymentRequest, payment);
 			return payment;
 		} else if (paymentTypeData.getBrand() == com.mpay24.payment.type.OnlineBankingPaymentType.Brand.SOFORT) {
 			Payment payment = new Payment();
 			payment.setAmount(convertBigDecimalToInteger(paymentRequest.getAmount()));
 			payment.setCurrency(paymentRequest.getCurrency());
-			payment.setUseProfile(paymentRequest.isSavePaymentData());
-			payment.setProfileID(paymentRequest.getStoredPaymentDataId());
-			payment.setTimeout(paymentRequest.getTimeoutSeconds());
+			payment.setUseProfile(objectFactory.createPaymentUseProfile(paymentRequest.isSavePaymentData()));
+			payment.setProfileID(objectFactory.createPaymentProfileID(paymentRequest.getStoredPaymentDataId()));
+			payment.setTimeout(objectFactory.createPaymentTimeout(paymentRequest.getTimeoutSeconds()));
 			setManualClearing(paymentRequest, payment);
 			return payment;
 		} else if (paymentTypeData.getBrand() == com.mpay24.payment.type.OnlineBankingPaymentType.Brand.GIROPAY) {
@@ -312,10 +308,10 @@ public class SdkApiObjectMapper {
 			payment.setAmount(convertBigDecimalToInteger(paymentRequest.getAmount()));
 			payment.setCurrency(paymentRequest.getCurrency());
 			payment.setBic(paymentTypeData.getBic());
-			payment.setIban(paymentTypeData.getIban());
-			payment.setUseProfile(paymentRequest.isSavePaymentData());
-			payment.setProfileID(paymentRequest.getStoredPaymentDataId());
-			payment.setTimeout(paymentRequest.getTimeoutSeconds());
+			payment.setIban(objectFactory.createPaymentGIROPAYIban(paymentTypeData.getIban()));
+			payment.setUseProfile(objectFactory.createPaymentUseProfile(paymentRequest.isSavePaymentData()));
+			payment.setProfileID(objectFactory.createPaymentProfileID(paymentRequest.getStoredPaymentDataId()));
+			payment.setTimeout(objectFactory.createPaymentTimeout(paymentRequest.getTimeoutSeconds()));
 			setManualClearing(paymentRequest, payment);
 			return payment;
 		}
@@ -326,28 +322,14 @@ public class SdkApiObjectMapper {
 		PaymentPAYPAL payment = new PaymentPAYPAL();
 		payment.setAmount(convertBigDecimalToInteger(paymentRequest.getAmount()));
 		payment.setCurrency(paymentRequest.getCurrency());
-		payment.setCustom(paymentTypeData.getCustom());
-		payment.setUseProfile(paymentRequest.isSavePaymentData());
-		payment.setProfileID(paymentRequest.getStoredPaymentDataId());
-		payment.setTimeout(paymentRequest.getTimeoutSeconds());
+		payment.setCustom(objectFactory.createPaymentPAYPALCustom(paymentTypeData.getCustom()));
+		payment.setUseProfile(objectFactory.createPaymentUseProfile(paymentRequest.isSavePaymentData()));
+		payment.setProfileID(objectFactory.createPaymentProfileID(paymentRequest.getStoredPaymentDataId()));
+		payment.setTimeout(objectFactory.createPaymentTimeout(paymentRequest.getTimeoutSeconds()));
 		setManualClearing(paymentRequest, payment);
 		if (paymentTypeData.isExpressCheckout()) {
 			payment.setCommit(false);
 		}
-		return payment;
-	}
-
-	private Payment mapPaymentSystemData(PaymentRequest paymentRequest, PayboxPaymentType paymentTypeData) {
-		PaymentPB payment = new PaymentPB();
-		payment.setAmount(convertBigDecimalToInteger(paymentRequest.getAmount()));
-		payment.setCurrency(paymentRequest.getCurrency());
-		payment.setIdentifier(paymentTypeData.getMobilePhoneNumber());
-		payment.setPayDays(paymentTypeData.getPayDays());
-		payment.setReserveDays(paymentTypeData.getReserveDays());
-		payment.setUseProfile(paymentRequest.isSavePaymentData());
-		payment.setProfileID(paymentRequest.getStoredPaymentDataId());
-		payment.setTimeout(paymentRequest.getTimeoutSeconds());
-		setManualClearing(paymentRequest, payment);
 		return payment;
 	}
 
@@ -357,7 +339,7 @@ public class SdkApiObjectMapper {
 		payment.setCurrency(paymentRequest.getCurrency());
 //		payment.setDateOfSignature(paymentTypeData.getDateOfSignature());
 //		payment.setMandateID(paymentTypeData.getMandateID());
-		payment.setTimeout(paymentRequest.getTimeoutSeconds());
+		payment.setTimeout(objectFactory.createPaymentTimeout(paymentRequest.getTimeoutSeconds()));
 		setManualClearing(paymentRequest, payment);
 		return payment;
 	}
@@ -368,7 +350,7 @@ public class SdkApiObjectMapper {
 		payment.setCurrency(paymentRequest.getCurrency());
 //		payment.setCvc(paymentTypeData.getCvc());
 //		payment.setAuth3DS(paymentTypeData.isAuth3DS());
-		payment.setTimeout(paymentRequest.getTimeoutSeconds());
+		payment.setTimeout(objectFactory.createPaymentTimeout(paymentRequest.getTimeoutSeconds()));
 		setManualClearing(paymentRequest, payment);
 		return payment;
 	}
@@ -377,9 +359,9 @@ public class SdkApiObjectMapper {
 		Payment payment = new Payment();
 		payment.setAmount(convertBigDecimalToInteger(paymentRequest.getAmount()));
 		payment.setCurrency(paymentRequest.getCurrency());
-		payment.setUseProfile(paymentRequest.isSavePaymentData());
-		payment.setProfileID(paymentRequest.getStoredPaymentDataId());
-		payment.setTimeout(paymentRequest.getTimeoutSeconds());
+		payment.setUseProfile(objectFactory.createPaymentUseProfile(paymentRequest.isSavePaymentData()));
+		payment.setProfileID(objectFactory.createPaymentProfileID(paymentRequest.getStoredPaymentDataId()));
+		payment.setTimeout(objectFactory.createPaymentTimeout(paymentRequest.getTimeoutSeconds()));
 		setManualClearing(paymentRequest, payment);
 		return payment;
 	}
@@ -388,10 +370,10 @@ public class SdkApiObjectMapper {
 		PaymentTOKEN payment = new PaymentTOKEN();
 		payment.setAmount(convertBigDecimalToInteger(paymentRequest.getAmount()));
 		payment.setCurrency(paymentRequest.getCurrency());
-		payment.setUseProfile(paymentRequest.isSavePaymentData());
-		payment.setProfileID(paymentRequest.getStoredPaymentDataId());
+		payment.setUseProfile(objectFactory.createPaymentUseProfile(paymentRequest.isSavePaymentData()));
+		payment.setProfileID(objectFactory.createPaymentProfileID(paymentRequest.getStoredPaymentDataId()));
 		payment.setToken(paymentType.getToken());
-		payment.setTimeout(paymentRequest.getTimeoutSeconds());
+		payment.setTimeout(objectFactory.createPaymentTimeout(paymentRequest.getTimeoutSeconds()));
 		setManualClearing(paymentRequest, payment);
 		return payment;
 	}
@@ -410,12 +392,12 @@ public class SdkApiObjectMapper {
 		Address soapAddress = new Address();
 		soapAddress.setMode(AddressMode.READONLY);
 		soapAddress.setName(customer.getName());
-		soapAddress.setBirthday(customer.getBirthdate());
-		soapAddress.setEmail(customer.getEmail());
+		soapAddress.setBirthday(objectFactory.createAddressBirthday(CalendarConverter.asXMLGregorianCalendar(customer.getBirthdate())));
+		soapAddress.setEmail(objectFactory.createAddressEmail(customer.getEmail()));
 		if (customer.getGender() != null) {
-			soapAddress.setGender(Gender.fromValue(customer.getGender().toString().toUpperCase()));
+			soapAddress.setGender(objectFactory.createAddressGender(Gender.fromValue(customer.getGender().toString().toUpperCase())));
 		}
-		soapAddress.setPhone(customer.getPhoneNumber());
+		soapAddress.setPhone(objectFactory.createAddressPhone(customer.getPhoneNumber()));
 		mapAddress(soapAddress, customer.getAddress());
 		return soapAddress;
 	}
@@ -426,11 +408,12 @@ public class SdkApiObjectMapper {
 		if (address.isEditable()) {
 			soapAddress.setMode(AddressMode.READWRITE);
 		}
+		ObjectFactory objectFactory = new ObjectFactory();
 		soapAddress.setCity(address.getCity());
 		soapAddress.setCountryCode(address.getCountryIso2());
-		soapAddress.setState(address.getState());
+		soapAddress.setState(objectFactory.createAddressState(address.getState()));
 		soapAddress.setStreet(address.getStreet());
-		soapAddress.setStreet2(address.getStreet2());
+		soapAddress.setStreet2(objectFactory.createAddressStreet2(address.getStreet2()));
 		soapAddress.setZip(address.getZip());
 	}
 
