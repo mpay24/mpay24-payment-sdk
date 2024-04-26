@@ -1,8 +1,8 @@
 package com.mpay24.payment.data;
 
-import java.math.BigInteger;
+import com.mpay24.soap.TStatus;
 
-import com.mpay.soap.client.TStatus;
+import java.math.BigInteger;
 
 public class Refund {
 	private BigInteger mPayTid;

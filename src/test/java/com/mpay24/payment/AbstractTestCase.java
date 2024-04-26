@@ -1,7 +1,12 @@
 package com.mpay24.payment;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import com.mpay24.payment.Mpay24.Environment;
+import com.mpay24.payment.data.*;
+import com.mpay24.payment.data.Customer.Gender;
+import com.mpay24.payment.data.PaymentRequest.Language;
+import com.mpay24.payment.data.StylingOptions.Template;
+import com.mpay24.payment.type.*;
+import com.mpay24.payment.type.DirectDebitPaymentType.Brand;
 
 import java.math.BigDecimal;
 import java.text.ParseException;
@@ -13,32 +18,8 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
-import com.mpay24.payment.Mpay24.Environment;
-import com.mpay24.payment.data.Address;
-import com.mpay24.payment.data.Customer;
-import com.mpay24.payment.data.Customer.Gender;
-import com.mpay24.payment.data.Payment;
-import com.mpay24.payment.data.PaymentRequest;
-import com.mpay24.payment.data.PaymentRequest.Language;
-import com.mpay24.payment.data.PaymentType;
-import com.mpay24.payment.data.ShoppingCart;
-import com.mpay24.payment.data.ShoppingCartItem;
-import com.mpay24.payment.data.StylingOptions;
-import com.mpay24.payment.data.StylingOptions.Template;
-import com.mpay24.payment.data.TokenRequest;
-import com.mpay24.payment.type.CreditCardPaymentType;
-import com.mpay24.payment.type.DebitCardPaymentType;
-import com.mpay24.payment.type.DirectDebitPaymentType;
-import com.mpay24.payment.type.DirectDebitPaymentType.Brand;
-import com.mpay24.payment.type.InstallmentPaymentType;
-import com.mpay24.payment.type.InvoicePaymentType;
-import com.mpay24.payment.type.OnlineBankingPaymentType;
-import com.mpay24.payment.type.PayboxPaymentType;
-import com.mpay24.payment.type.PaymentTypeData;
-import com.mpay24.payment.type.PaypalPaymentType;
-import com.mpay24.payment.type.PaysafecardPaymentType;
-import com.mpay24.payment.type.QuickPaymentType;
-import com.mpay24.payment.type.TokenPaymentType;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 public abstract class AbstractTestCase {
 	protected Mpay24 mpay24 = new Mpay24(getMerchantId(), getMerchantPassword(), Environment.TEST);
@@ -300,12 +281,6 @@ public abstract class AbstractTestCase {
 		return new PaypalPaymentType();
 	}
 
-	protected PaymentTypeData getPayboxData() {
-		PayboxPaymentType paymentType = new PayboxPaymentType();
-		paymentType.setMobilePhoneNumber("+436642222222");
-		return paymentType;
-	}
-
 	protected PaymentTypeData getPaysafecardData() {
 		return new PaysafecardPaymentType();
 	}
@@ -360,7 +335,7 @@ public abstract class AbstractTestCase {
 	}
 	protected TokenRequest getTestTokenRequest(String customerId, String language) {
 		TokenRequest tokenRequest = new TokenRequest();
-		tokenRequest.setPaymentType(com.mpay.soap.client.PaymentType.CC);
+		tokenRequest.setPaymentType(com.mpay24.soap.PaymentType.CC);
 		tokenRequest.setTemplateSet("DEFAULT");
 		tokenRequest.setStyle("DEFAULT");
 		tokenRequest.setLanguage(language);

@@ -1,6 +1,6 @@
 package com.mpay24.payment.type;
 
-import com.mpay.soap.client.PaymentType;
+import com.mpay24.soap.PaymentType;
 
 public class PaypalPaymentType extends PaymentTypeData {
 	private boolean expressCheckout = false;

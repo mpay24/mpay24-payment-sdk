@@ -1,8 +1,9 @@
 package com.mpay24.payment;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-
+import com.mpay24.payment.data.Payment;
+import com.mpay24.payment.data.PaymentRequest.Language;
+import com.mpay24.payment.data.PaymentType;
+import com.mpay24.payment.data.StylingOptions.Template;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.After;
@@ -13,10 +14,8 @@ import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
-import com.mpay24.payment.data.Payment;
-import com.mpay24.payment.data.PaymentRequest.Language;
-import com.mpay24.payment.data.PaymentType;
-import com.mpay24.payment.data.StylingOptions.Template;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 public class TestPaymentPanel extends AbstractSeleniumTestcase {
 	public final static Logger logger = LogManager.getLogger(TestPaymentPanel.class);
@@ -31,7 +30,7 @@ public class TestPaymentPanel extends AbstractSeleniumTestcase {
 		Payment response = mpay24.paymentPage(getTestPaymentRequest());
 		assertSuccessfullResponse(response);
 		RemoteWebDriver driver = openFirefoxAtUrl(response.getRedirectLocation());
-		WebElement element = driver.findElementById("CC");
+		WebElement element = driver.findElement(By.id("CC"));
 		assertNotNull(element.findElement(By.xpath("//input[@name='selCC|MASTERCARD']")));
 		assertNotNull(element.findElement(By.xpath("//input[@name='selCC|VISA']")));
 	}
@@ -60,7 +59,7 @@ public class TestPaymentPanel extends AbstractSeleniumTestcase {
 		assertSuccessfullResponse(response);
 
 		RemoteWebDriver driver = openFirefoxAtUrl(response.getRedirectLocation());
-		assertEquals("Kartenzahlung", driver.findElementById("ptype_desc").getText());
+		assertEquals("Kartenzahlung", driver.findElement(By.id("ptype_desc")).getText());
 	}
 
 	@Test
@@ -69,9 +68,9 @@ public class TestPaymentPanel extends AbstractSeleniumTestcase {
 		assertSuccessfullResponse(response);
 
 		RemoteWebDriver driver = openFirefoxAtUrl(response.getRedirectLocation());
-		assertEquals("Kartenzahlung", driver.findElementById("ptype_desc").getText());
+		assertEquals("Kartenzahlung", driver.findElement(By.id("ptype_desc")).getText());
 
-		WebElement buttons = driver.findElementById("buttons");
+		WebElement buttons = driver.findElement(By.id("buttons"));
 		WebElement applePayButton = buttons.findElement(By.xpath("div[@class='apple-pay']/button"));
 		assertEquals("button", applePayButton.getAttribute("type"));
 	}
@@ -82,9 +81,9 @@ public class TestPaymentPanel extends AbstractSeleniumTestcase {
 		assertSuccessfullResponse(response);
 
 		RemoteWebDriver driver = openFirefoxAtUrl(response.getRedirectLocation());
-		assertEquals("Kartenzahlung", driver.findElementById("ptype_desc").getText());
+		assertEquals("Kartenzahlung", driver.findElement(By.id("ptype_desc")).getText());
 
-		WebElement googlePayButton = driver.findElementById("googlepay");
+		WebElement googlePayButton = driver.findElement(By.id("googlepay"));
 		WebElement button = googlePayButton.findElement(By.xpath("div[@class='gpay-button-fill']/button"));
 		assertEquals("button", button.getAttribute("type"));
 	}
@@ -95,7 +94,7 @@ public class TestPaymentPanel extends AbstractSeleniumTestcase {
 		assertSuccessfullResponse(response);
 
 		RemoteWebDriver driver = openFirefoxAtUrl(response.getRedirectLocation());
-		assertEquals("Bankeinzug", driver.findElementById("ptype_desc").getText());
+		assertEquals("Bankeinzug", driver.findElement(By.id("ptype_desc")).getText());
 	}
 
 	@Test
@@ -104,7 +103,7 @@ public class TestPaymentPanel extends AbstractSeleniumTestcase {
 		assertSuccessfullResponse(response);
 
 		RemoteWebDriver driver = openFirefoxAtUrl(response.getRedirectLocation());
-		assertEquals("Lastschrift", driver.findElementById("ptype_desc").getText());
+		assertEquals("Lastschrift", driver.findElement(By.id("ptype_desc")).getText());
 	}
 
 	@Test
@@ -119,7 +118,7 @@ public class TestPaymentPanel extends AbstractSeleniumTestcase {
 		Payment response = mpay24.paymentPage(getTestPaymentRequest(120.0, null), getTestShoppingCart());
 		assertSuccessfullResponse(response);
 		RemoteWebDriver driver = openFirefoxAtUrl(response.getRedirectLocation());
-		WebElement element = driver.findElementById("cart");
+		WebElement element = driver.findElement(By.id("cart"));
 		assertEquals("Rabatt:", element.findElement(By.xpath("tfoot/tr[1]/th")).getText());
 		assertEquals("-10,00", element.findElement(By.xpath("tfoot/tr[1]/td")).getText());
 
@@ -143,7 +142,7 @@ public class TestPaymentPanel extends AbstractSeleniumTestcase {
 		assertSuccessfullResponse(response);
 		RemoteWebDriver driver = openFirefoxAtUrl(response.getRedirectLocation());
 		
-		WebElement element = driver.findElementById("cart");
+		WebElement element = driver.findElement(By.id("cart"));
 		assertEquals("Rabatt:", element.findElement(By.xpath("tfoot/tr[1]/th")).getText());
 	}
 	
@@ -153,7 +152,7 @@ public class TestPaymentPanel extends AbstractSeleniumTestcase {
 		assertSuccessfullResponse(response);
 		
 		RemoteWebDriver driver = openFirefoxAtUrl(response.getRedirectLocation());
-		WebElement element = driver.findElementById("cart");
+		WebElement element = driver.findElement(By.id("cart"));
 		assertEquals("No.", element.findElement(By.xpath("thead/tr[1]/th[1]")).getText());
 		assertEquals("Prod. No.", element.findElement(By.xpath("thead/tr[1]/th[2]")).getText());
 		assertEquals("Product Name", element.findElement(By.xpath("thead/tr[1]/th[3]")).getText());
@@ -172,7 +171,7 @@ public class TestPaymentPanel extends AbstractSeleniumTestcase {
 		assertSuccessfullResponse(response);
 		
 		RemoteWebDriver driver = openFirefoxAtUrl(response.getRedirectLocation());
-		assertEquals("/app/checkout/css/DEFAULT/DEFAULT.css?v3", removeDomain(driver.findElement(By.xpath("//head/link[@rel='stylesheet']")).getAttribute("href")));
+		assertEquals("/app/checkout/css/DEFAULT/DEFAULT.css?v4", removeDomain(driver.findElement(By.xpath("//head/link[@rel='stylesheet']")).getAttribute("href")));
 	}
 
 	@Test
@@ -181,7 +180,7 @@ public class TestPaymentPanel extends AbstractSeleniumTestcase {
 		assertSuccessfullResponse(response);
 		
 		RemoteWebDriver driver = openFirefoxAtUrl(response.getRedirectLocation());
-		assertEquals("/app/checkout/css/DEFAULT/DEFAULT.css?v3", removeDomain(driver.findElement(By.xpath("//head/link[@rel='stylesheet']")).getAttribute("href")));
+		assertEquals("/app/checkout/css/DEFAULT/DEFAULT.css?v4", removeDomain(driver.findElement(By.xpath("//head/link[@rel='stylesheet']")).getAttribute("href")));
 	}
 	
 	@Test

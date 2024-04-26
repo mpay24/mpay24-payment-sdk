@@ -1,8 +1,6 @@
 package com.mpay24.payment;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-
+import com.mpay24.payment.data.Token;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -10,7 +8,8 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.remote.RemoteWebDriver;
 
-import com.mpay24.payment.data.Token;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 public class TestCreateCustomerViaToken extends AbstractSeleniumTestcase {
 

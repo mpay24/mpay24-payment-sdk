@@ -1,13 +1,12 @@
 package com.mpay24.payment;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+import com.mpay24.payment.Mpay24.Environment;
+import org.junit.Test;
 
 import java.text.ParseException;
 
-import org.junit.Test;
-
-import com.mpay24.payment.Mpay24.Environment;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 public class TestReturnCodes extends AbstractTestCase{
 	protected Mpay24 mpay24InvalidUser = new Mpay24("12345", getMerchantPassword(), Environment.TEST);

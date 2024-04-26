@@ -1,10 +1,10 @@
 package com.mpay24.payment.data;
 
+import com.mpay24.soap.PaymentType;
+
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Date;
-
-import com.mpay.soap.client.PaymentType;
 
 public class Payment {
 

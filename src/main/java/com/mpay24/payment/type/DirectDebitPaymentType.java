@@ -1,8 +1,8 @@
 package com.mpay24.payment.type;
 
-import java.util.Date;
+import com.mpay24.soap.PaymentType;
 
-import com.mpay.soap.client.PaymentType;
+import java.util.Date;
 
 public class DirectDebitPaymentType extends PaymentTypeData {
 	private Brand brand;

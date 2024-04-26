@@ -1,45 +1,29 @@
 package com.mpay24.payment.mapper;
 
-import java.math.BigDecimal;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.List;
+import com.mpay24.mdxi.*;
+import com.mpay24.mdxi.AddressType.Country;
+import com.mpay24.mdxi.AddressType.Name;
+import com.mpay24.mdxi.AddressType.Street;
+import com.mpay24.mdxi.Order.*;
+import com.mpay24.mdxi.Order.PaymentTypes.Payment;
+import com.mpay24.mdxi.Order.ShoppingCart.Item;
+import com.mpay24.mdxi.Order.ShoppingCart.Item.Number;
+import com.mpay24.mdxi.Order.ShoppingCart.Item.Price;
+import com.mpay24.mdxi.Order.ShoppingCart.Item.*;
+import com.mpay24.payment.data.Customer;
+import com.mpay24.payment.data.*;
+import com.mpay24.payment.data.ShoppingCart;
+import com.mpay24.payment.data.Customer.Gender;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.xml.bind.JAXBException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
-
-import com.mpay.mdxi.AddressModeType;
-import com.mpay.mdxi.AddressType;
-import com.mpay.mdxi.AddressType.Country;
-import com.mpay.mdxi.AddressType.Name;
-import com.mpay.mdxi.AddressType.Street;
-import com.mpay.mdxi.LanguageType;
-import com.mpay.mdxi.Order.BillingAddr;
-import com.mpay.mdxi.Order.Currency;
-import com.mpay.mdxi.Order.PaymentTypes;
-import com.mpay.mdxi.Order.PaymentTypes.Payment;
-import com.mpay.mdxi.Order.ShippingAddr;
-import com.mpay.mdxi.Order.ShoppingCart.Item;
-import com.mpay.mdxi.Order.ShoppingCart.Item.Description;
-import com.mpay.mdxi.Order.ShoppingCart.Item.ItemPrice;
-import com.mpay.mdxi.Order.ShoppingCart.Item.Number;
-import com.mpay.mdxi.Order.ShoppingCart.Item.Price;
-import com.mpay.mdxi.Order.ShoppingCart.Item.ProductNr;
-import com.mpay.mdxi.Order.ShoppingCart.Item.Quantity;
-import com.mpay.mdxi.Order.TemplateSet;
-import com.mpay.mdxi.PaymentBrandType;
-import com.mpay.mdxi.PaymentTypeType;
-import com.mpay24.payment.data.Address;
-import com.mpay24.payment.data.Customer;
-import com.mpay24.payment.data.Customer.Gender;
-import com.mpay24.payment.data.PaymentRequest;
-import com.mpay24.payment.data.PaymentType;
-import com.mpay24.payment.data.ShoppingCart;
-import com.mpay24.payment.data.ShoppingCartItem;
-import com.mpay24.payment.data.StylingOptions;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import java.math.BigDecimal;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.List;
 
 public class SdkMdxiMapper {
 	public final static Logger logger = LogManager.getLogger(SdkMdxiMapper.class);
@@ -48,7 +32,7 @@ public class SdkMdxiMapper {
 
 	public String constructAndMarshalOrder(PaymentRequest paymentRequest, Customer customer, ShoppingCart shoppingCart, StylingOptions stylingOptions, String templateStyle) {
 		try {
-			com.mpay.mdxi.Order order = getOrder(paymentRequest);
+			com.mpay24.mdxi.Order order = getOrder(paymentRequest);
 			order.setURL(getUrl(paymentRequest));
 			order.setPrice(getPrice(paymentRequest));
 			order.setCurrency(getCurrency(paymentRequest.getCurrency()));
@@ -86,15 +70,15 @@ public class SdkMdxiMapper {
 		}
 	}
 
-	private void constructShoppingCart(ShoppingCart shoppingCart, com.mpay.mdxi.Order order) {
+	private void constructShoppingCart(ShoppingCart shoppingCart, com.mpay24.mdxi.Order order) {
 		order.setShoppingCart(getShoppingCart(shoppingCart));
 	}
 
-	private void constructPaymentTypes(PaymentRequest paymentRequest, com.mpay.mdxi.Order order) {
+	private void constructPaymentTypes(PaymentRequest paymentRequest, com.mpay24.mdxi.Order order) {
 		order.setPaymentTypes(getPaymentTypes(paymentRequest));
 	}
 
-	private void constructCustomerData(PaymentRequest paymentRequest, Customer customer, com.mpay.mdxi.Order order) {
+	private void constructCustomerData(PaymentRequest paymentRequest, Customer customer, com.mpay24.mdxi.Order order) {
 		if (customer == null)
 			return;
 		order.setClientIP(customer.getClientIp());
@@ -147,14 +131,14 @@ public class SdkMdxiMapper {
 		return payment;
 	}
 
-	private com.mpay.mdxi.Order getOrder(PaymentRequest paymentsRequest) {
-		com.mpay.mdxi.Order order = new com.mpay.mdxi.Order();
+	private com.mpay24.mdxi.Order getOrder(PaymentRequest paymentsRequest) {
+		com.mpay24.mdxi.Order order = new com.mpay24.mdxi.Order();
 		order.setTid(paymentsRequest.getTransactionID());
 		return order;
 	}
 
-	private com.mpay.mdxi.Order.URL getUrl(PaymentRequest paymentsRequest) {
-		com.mpay.mdxi.Order.URL url = new com.mpay.mdxi.Order.URL();
+	private com.mpay24.mdxi.Order.URL getUrl(PaymentRequest paymentsRequest) {
+		com.mpay24.mdxi.Order.URL url = new com.mpay24.mdxi.Order.URL();
 		url.setSuccess(paymentsRequest.getSuccessUrl());
 		url.setError(paymentsRequest.getErrorUrl());
 		url.setConfirmation(paymentsRequest.getConfirmationUrl());
@@ -162,8 +146,8 @@ public class SdkMdxiMapper {
 		return url;
 	}
 
-	private com.mpay.mdxi.Order.Price getPrice(PaymentRequest paymentsRequest) {
-		com.mpay.mdxi.Order.Price price = new com.mpay.mdxi.Order.Price();
+	private com.mpay24.mdxi.Order.Price getPrice(PaymentRequest paymentsRequest) {
+		com.mpay24.mdxi.Order.Price price = new com.mpay24.mdxi.Order.Price();
 		price.setValue(paymentsRequest.getAmount().floatValue());
 		return price;
 	}
@@ -174,8 +158,8 @@ public class SdkMdxiMapper {
 		return currency;
 	}
 
-	private com.mpay.mdxi.Order.Customer getCustomer(PaymentRequest paymentRequest, Customer customer) {
-		com.mpay.mdxi.Order.Customer mdxiCustomer = new com.mpay.mdxi.Order.Customer();
+	private com.mpay24.mdxi.Order.Customer getCustomer(PaymentRequest paymentRequest, Customer customer) {
+		com.mpay24.mdxi.Order.Customer mdxiCustomer = new com.mpay24.mdxi.Order.Customer();
 		mdxiCustomer.setId(customer.getCustomerId());
 		mdxiCustomer.setValue(customer.getName());
 		mdxiCustomer.setUseProfile(paymentRequest.isSavePaymentData());
@@ -241,10 +225,10 @@ public class SdkMdxiMapper {
 		return country;
 	}
 
-	private com.mpay.mdxi.Order.ShoppingCart getShoppingCart(ShoppingCart shoppingCart) {
+	private com.mpay24.mdxi.Order.ShoppingCart getShoppingCart(ShoppingCart shoppingCart) {
 		if (shoppingCart == null)
 			return null;
-		com.mpay.mdxi.Order.ShoppingCart mdxi = new com.mpay.mdxi.Order.ShoppingCart();
+		com.mpay24.mdxi.Order.ShoppingCart mdxi = new com.mpay24.mdxi.Order.ShoppingCart();
 		mdxi.setDescription(shoppingCart.getDescription());
 		addDiscount(shoppingCart, mdxi);
 		addShippingCost(shoppingCart, mdxi);
@@ -254,12 +238,12 @@ public class SdkMdxiMapper {
 		return mdxi;
 	}
 
-	private void addShoppingItems(ShoppingCart shoppingCart, com.mpay.mdxi.Order.ShoppingCart mdxi) {
+	private void addShoppingItems(ShoppingCart shoppingCart, com.mpay24.mdxi.Order.ShoppingCart mdxi) {
 		if (shoppingCart.getItemList() == null)
 			return;
 		List<Item> itemList = mdxi.getItem();
 		for (ShoppingCartItem shoppingCartItem : shoppingCart.getItemList()) {
-			com.mpay.mdxi.Order.ShoppingCart.Item item = new com.mpay.mdxi.Order.ShoppingCart.Item();
+			com.mpay24.mdxi.Order.ShoppingCart.Item item = new com.mpay24.mdxi.Order.ShoppingCart.Item();
 			item.setDescription(getDescription(shoppingCartItem.getDescription()));
 			item.setItemPrice(getItemPrice(shoppingCartItem.getItemAmount()));
 			item.setNumber(getNumber(shoppingCartItem.getSequenceId()));
@@ -273,7 +257,7 @@ public class SdkMdxiMapper {
 	private Quantity getQuantity(Long quantity) {
 		if (quantity == null)
 			return null;
-		com.mpay.mdxi.Order.ShoppingCart.Item.Quantity q = new com.mpay.mdxi.Order.ShoppingCart.Item.Quantity();
+		com.mpay24.mdxi.Order.ShoppingCart.Item.Quantity q = new com.mpay24.mdxi.Order.ShoppingCart.Item.Quantity();
 		q.setValue(quantity);
 		return q;
 	}
@@ -281,7 +265,7 @@ public class SdkMdxiMapper {
 	private ProductNr getProductNumber(String productCode) {
 		if (productCode == null)
 			return null;
-		com.mpay.mdxi.Order.ShoppingCart.Item.ProductNr productNumber = new com.mpay.mdxi.Order.ShoppingCart.Item.ProductNr();
+		com.mpay24.mdxi.Order.ShoppingCart.Item.ProductNr productNumber = new com.mpay24.mdxi.Order.ShoppingCart.Item.ProductNr();
 		productNumber.setValue(productCode);
 		return productNumber;
 	}
@@ -289,7 +273,7 @@ public class SdkMdxiMapper {
 	private Price getPrice(BigDecimal price) {
 		if (price == null)
 			return null;
-		com.mpay.mdxi.Order.ShoppingCart.Item.Price p = new com.mpay.mdxi.Order.ShoppingCart.Item.Price();
+		com.mpay24.mdxi.Order.ShoppingCart.Item.Price p = new com.mpay24.mdxi.Order.ShoppingCart.Item.Price();
 		p.setValue(price.floatValue());
 		return p;
 	}
@@ -297,7 +281,7 @@ public class SdkMdxiMapper {
 	private Number getNumber(String sequenceId) {
 		if (sequenceId == null)
 			return null;
-		com.mpay.mdxi.Order.ShoppingCart.Item.Number number = new com.mpay.mdxi.Order.ShoppingCart.Item.Number();
+		com.mpay24.mdxi.Order.ShoppingCart.Item.Number number = new com.mpay24.mdxi.Order.ShoppingCart.Item.Number();
 		number.setValue(sequenceId);
 		return number;
 	}
@@ -305,7 +289,7 @@ public class SdkMdxiMapper {
 	private ItemPrice getItemPrice(BigDecimal itemPrice) {
 		if (itemPrice == null)
 			return null;
-		com.mpay.mdxi.Order.ShoppingCart.Item.ItemPrice price = new com.mpay.mdxi.Order.ShoppingCart.Item.ItemPrice();
+		com.mpay24.mdxi.Order.ShoppingCart.Item.ItemPrice price = new com.mpay24.mdxi.Order.ShoppingCart.Item.ItemPrice();
 		price.setValue(itemPrice.floatValue());
 		return price;
 	}
@@ -313,22 +297,22 @@ public class SdkMdxiMapper {
 	private Description getDescription(String description) {
 		if (description == null)
 			return null;
-		com.mpay.mdxi.Order.ShoppingCart.Item.Description desc = new com.mpay.mdxi.Order.ShoppingCart.Item.Description();
+		com.mpay24.mdxi.Order.ShoppingCart.Item.Description desc = new com.mpay24.mdxi.Order.ShoppingCart.Item.Description();
 		desc.setValue(description);
 		return desc;
 	}
 
-	private void addDiscount(ShoppingCart shoppingCart, com.mpay.mdxi.Order.ShoppingCart mdxi) {
+	private void addDiscount(ShoppingCart shoppingCart, com.mpay24.mdxi.Order.ShoppingCart mdxi) {
 		if (shoppingCart.getDiscount() != null) {
-			com.mpay.mdxi.Order.ShoppingCart.Discount discount = new com.mpay.mdxi.Order.ShoppingCart.Discount();
+			com.mpay24.mdxi.Order.ShoppingCart.Discount discount = new com.mpay24.mdxi.Order.ShoppingCart.Discount();
 			discount.setValue(shoppingCart.getDiscount().floatValue());
 			mdxi.getSubTotalOrDiscountOrShippingCosts().add(discount);
 		}
 	}
 
-	private void addShippingCost(ShoppingCart shoppingCart, com.mpay.mdxi.Order.ShoppingCart mdxi) {
+	private void addShippingCost(ShoppingCart shoppingCart, com.mpay24.mdxi.Order.ShoppingCart mdxi) {
 		if (shoppingCart.getShippingCost() != null) {
-			com.mpay.mdxi.Order.ShoppingCart.ShippingCosts shippingCosts = new com.mpay.mdxi.Order.ShoppingCart.ShippingCosts();
+			com.mpay24.mdxi.Order.ShoppingCart.ShippingCosts shippingCosts = new com.mpay24.mdxi.Order.ShoppingCart.ShippingCosts();
 			shippingCosts.setValue(shoppingCart.getShippingCost().floatValue());
 			if (shoppingCart.getShippingCostTax() != null) {
 				shippingCosts.setTax(shoppingCart.getShippingCostTax().floatValue());
@@ -337,17 +321,17 @@ public class SdkMdxiMapper {
 		}
 	}
 
-	private void addSubTotal(ShoppingCart shoppingCart, com.mpay.mdxi.Order.ShoppingCart mdxi) {
+	private void addSubTotal(ShoppingCart shoppingCart, com.mpay24.mdxi.Order.ShoppingCart mdxi) {
 		if (shoppingCart.getSubTotal() != null) {
-			com.mpay.mdxi.Order.ShoppingCart.SubTotal subTotal = new com.mpay.mdxi.Order.ShoppingCart.SubTotal();
+			com.mpay24.mdxi.Order.ShoppingCart.SubTotal subTotal = new com.mpay24.mdxi.Order.ShoppingCart.SubTotal();
 			subTotal.setValue(shoppingCart.getSubTotal().floatValue());
 			mdxi.getSubTotalOrDiscountOrShippingCosts().add(subTotal);
 		}
 	}
 
-	private void addTax(ShoppingCart shoppingCart, com.mpay.mdxi.Order.ShoppingCart mdxi) {
+	private void addTax(ShoppingCart shoppingCart, com.mpay24.mdxi.Order.ShoppingCart mdxi) {
 		if (shoppingCart.getTax() != null) {
-			com.mpay.mdxi.Order.ShoppingCart.Tax tax = new com.mpay.mdxi.Order.ShoppingCart.Tax();
+			com.mpay24.mdxi.Order.ShoppingCart.Tax tax = new com.mpay24.mdxi.Order.ShoppingCart.Tax();
 			tax.setValue(shoppingCart.getTax().floatValue());
 			tax.setPercent(shoppingCart.getTaxPercentage().floatValue());
 			mdxi.getSubTotalOrDiscountOrShippingCosts().add(tax);

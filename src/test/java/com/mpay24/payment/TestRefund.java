@@ -1,19 +1,18 @@
 package com.mpay24.payment;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-
-import java.math.BigDecimal;
-import java.text.ParseException;
-
+import com.mpay24.payment.data.Payment;
+import com.mpay24.payment.data.Refund;
+import com.mpay24.payment.data.State;
+import com.mpay24.soap.Status;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.Test;
 
-import com.mpay.soap.client.Status;
-import com.mpay24.payment.data.Payment;
-import com.mpay24.payment.data.Refund;
-import com.mpay24.payment.data.State;
+import java.math.BigDecimal;
+import java.text.ParseException;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 public class TestRefund extends AbstractTestCase {
 	public final static Logger logger = LogManager.getLogger(TestRefund.class);

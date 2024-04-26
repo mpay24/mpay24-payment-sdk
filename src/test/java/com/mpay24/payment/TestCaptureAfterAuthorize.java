@@ -1,16 +1,15 @@
 package com.mpay24.payment;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-
-import java.math.BigDecimal;
-import java.text.ParseException;
-
+import com.mpay24.payment.data.Payment;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.Test;
 
-import com.mpay24.payment.data.Payment;
+import java.math.BigDecimal;
+import java.text.ParseException;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 public class TestCaptureAfterAuthorize extends AbstractTestCase {
 	public final static Logger logger = LogManager.getLogger(TestCaptureAfterAuthorize.class);

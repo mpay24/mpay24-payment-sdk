@@ -1,31 +1,23 @@
 package com.mpay24.payment;
 
+import com.mpay24.payment.communication.SoapCommunication;
+import com.mpay24.payment.data.Payment;
+import com.mpay24.payment.data.PaymentData;
+import com.mpay24.payment.data.ShoppingCart;
+import com.mpay24.payment.data.*;
+import com.mpay24.payment.mapper.SdkApiObjectMapper;
+import com.mpay24.payment.mapper.SdkMdxiMapper;
+import com.mpay24.payment.type.PaymentTypeData;
+import com.mpay24.soap.Address;
+import com.mpay24.soap.PaymentType;
+import com.mpay24.soap.*;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Date;
 import java.util.List;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
-import com.mpay.soap.client.Address;
-import com.mpay.soap.client.Order;
-import com.mpay.soap.client.PaymentType;
-import com.mpay.soap.client.SortField;
-import com.mpay.soap.client.SortType;
-import com.mpay24.payment.communication.SoapCommunication;
-import com.mpay24.payment.data.Customer;
-import com.mpay24.payment.data.Payment;
-import com.mpay24.payment.data.PaymentData;
-import com.mpay24.payment.data.PaymentRequest;
-import com.mpay24.payment.data.Refund;
-import com.mpay24.payment.data.ShoppingCart;
-import com.mpay24.payment.data.StylingOptions;
-import com.mpay24.payment.data.Token;
-import com.mpay24.payment.data.TokenRequest;
-import com.mpay24.payment.mapper.SdkApiObjectMapper;
-import com.mpay24.payment.mapper.SdkMdxiMapper;
-import com.mpay24.payment.type.PaymentTypeData;
 
 public class Mpay24 {
 
@@ -105,7 +97,7 @@ public class Mpay24 {
 		return payment(paymentRequest, paymentTypeData, customer, null);
 	}
 	public Payment payment(PaymentRequest paymentRequest, PaymentTypeData paymentTypeData, Customer customer, ShoppingCart shoppingCart) throws PaymentException {
-		com.mpay.soap.client.Payment payment = mapper.mapPaymentSystemData(paymentRequest, paymentTypeData);
+		com.mpay24.soap.Payment payment = mapper.mapPaymentSystemData(paymentRequest, paymentTypeData);
 		Order order = mapper.mapOrder(paymentRequest, customer, shoppingCart);
 
 		return soapCommunication.acceptPayment(paymentRequest.getTransactionID(), paymentTypeData.getPaymentType(), payment,
@@ -184,7 +176,7 @@ public class Mpay24 {
 	}
 	public void createCustomer(Customer customer, String profileId, PaymentTypeData paymentTypeData) throws PaymentException {
 		PaymentType paymentType = mapper.mapPaymentTypeData(paymentTypeData);
-		com.mpay.soap.client.PaymentData paymentData = mapper.mapPaymentData(paymentTypeData, profileId);
+		com.mpay24.soap.PaymentData paymentData = mapper.mapPaymentData(paymentTypeData, profileId);
 		Address address = mapper.mapCustomer(customer);
 		soapCommunication.createCustomer(customer.getCustomerId(), customer.getName(), address, paymentType, paymentData);
 	}
@@ -192,7 +184,7 @@ public class Mpay24 {
 	public Payment createCustomer(Customer customer, String profileId, PaymentTypeData paymentTypeData, PaymentRequest paymentRequest, boolean validate) throws PaymentException {
 		PaymentType paymentType = mapper.mapPaymentTypeData(paymentTypeData);
 		Order order = mapper.mapOrder(paymentRequest, customer, null);
-		com.mpay.soap.client.PaymentData paymentData = mapper.mapPaymentData(paymentTypeData, profileId);
+		com.mpay24.soap.PaymentData paymentData = mapper.mapPaymentData(paymentTypeData, profileId);
 		Address address = mapper.mapCustomer(customer);
 		paymentData.setValidate(validate);
 		return soapCommunication.createCustomer(customer.getCustomerId(), customer.getName(), address, paymentType, paymentData, paymentRequest.getTransactionID(), order, paymentRequest.getSuccessUrl(), paymentRequest.getErrorUrl(),
