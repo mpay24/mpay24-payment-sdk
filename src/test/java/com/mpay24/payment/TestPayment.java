@@ -1,17 +1,16 @@
 package com.mpay24.payment;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-
-import java.text.ParseException;
-
+import com.mpay24.payment.data.Payment;
+import com.mpay24.payment.type.DirectDebitPaymentType.Brand;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import com.mpay24.payment.data.Payment;
-import com.mpay24.payment.type.DirectDebitPaymentType.Brand;
+import java.text.ParseException;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 public class TestPayment extends AbstractTestCase {
 	public final static Logger logger = LogManager.getLogger(TestPayment.class);

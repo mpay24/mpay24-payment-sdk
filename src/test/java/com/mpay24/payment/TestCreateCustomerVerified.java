@@ -1,12 +1,6 @@
 package com.mpay24.payment;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-
-import java.text.ParseException;
-import java.util.List;
-
+import com.mpay24.payment.data.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.After;
@@ -15,11 +9,10 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.remote.RemoteWebDriver;
 
-import com.mpay24.payment.data.Customer;
-import com.mpay24.payment.data.Payment;
-import com.mpay24.payment.data.PaymentData;
-import com.mpay24.payment.data.PaymentRequest;
-import com.mpay24.payment.data.Token;
+import java.text.ParseException;
+import java.util.List;
+
+import static org.junit.Assert.*;
 
 public class TestCreateCustomerVerified extends AbstractSeleniumTestcase {
 	public final static Logger logger = LogManager.getLogger(TestCreateCustomerVerified.class);

@@ -1,16 +1,15 @@
 package com.mpay24.payment;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-
-import java.text.ParseException;
-import java.util.List;
-
+import com.mpay24.payment.data.Payment;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.mpay24.payment.data.Payment;
+import java.text.ParseException;
+import java.util.List;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 public class TestPaymentHistory extends AbstractTestCase {
 

@@ -1,14 +1,10 @@
 package com.mpay24.payment;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
-
+import com.mpay24.payment.data.Payment;
+import com.mpay24.payment.data.PaymentData;
+import com.mpay24.payment.type.DirectDebitPaymentType.Brand;
+import com.mpay24.payment.type.RecurringCreditCardPaymentType;
+import com.mpay24.payment.type.RecurringDirectDebitPaymentType;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.After;
@@ -20,11 +16,12 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
-import com.mpay24.payment.data.Payment;
-import com.mpay24.payment.data.PaymentData;
-import com.mpay24.payment.type.DirectDebitPaymentType.Brand;
-import com.mpay24.payment.type.RecurringCreditCardPaymentType;
-import com.mpay24.payment.type.RecurringDirectDebitPaymentType;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
+
+import static org.junit.Assert.*;
 
 public class TestRecurringPayments extends AbstractSeleniumTestcase {
 	public final static Logger logger = LogManager.getLogger(TestRecurringPayments.class);

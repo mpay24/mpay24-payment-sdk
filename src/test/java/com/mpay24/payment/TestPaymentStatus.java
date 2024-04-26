@@ -1,17 +1,16 @@
 package com.mpay24.payment;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import com.mpay24.payment.data.Payment;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 import java.math.BigDecimal;
 import java.text.ParseException;
 import java.util.Random;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-
-import com.mpay24.payment.data.Payment;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 public class TestPaymentStatus extends AbstractTestCase {
 

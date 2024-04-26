@@ -1,8 +1,9 @@
 package com.mpay24.payment;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-
+import com.mpay24.payment.data.Payment;
+import com.mpay24.payment.data.PaymentRequest.Language;
+import com.mpay24.payment.data.PaymentType;
+import com.mpay24.payment.data.StylingOptions.Template;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.After;
@@ -13,12 +14,8 @@ import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
-import com.mpay24.payment.data.Payment;
-import com.mpay24.payment.data.PaymentRequest.Language;
-import com.mpay24.payment.data.PaymentType;
-import com.mpay24.payment.data.StylingOptions.Template;
-
-import java.time.Duration;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 public class TestPaymentPanel extends AbstractSeleniumTestcase {
 	public final static Logger logger = LogManager.getLogger(TestPaymentPanel.class);
