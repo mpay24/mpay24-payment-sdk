@@ -1,5 +1,27 @@
 package com.mpay24.payment.communication;
 
+import com.mpay24.payment.Mpay24.Environment;
+import com.mpay24.payment.PaymentException;
+import com.mpay24.payment.data.Address;
+import com.mpay24.payment.data.Payment;
+import com.mpay24.payment.data.PaymentData;
+import com.mpay24.payment.data.*;
+import com.mpay24.payment.util.CalendarConverter;
+import com.mpay24.soap.PaymentType;
+import com.mpay24.soap.*;
+import jakarta.xml.ws.BindingProvider;
+import jakarta.xml.ws.Holder;
+import org.apache.cxf.configuration.jsse.TLSClientParameters;
+import org.apache.cxf.endpoint.Client;
+import org.apache.cxf.frontend.ClientProxy;
+import org.apache.cxf.interceptor.LoggingOutInterceptor;
+import org.apache.cxf.transport.http.HTTPConduit;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
+import javax.xml.namespace.QName;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.net.MalformedURLException;
@@ -8,47 +30,10 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import javax.net.ssl.TrustManager;
-import javax.net.ssl.X509TrustManager;
-import javax.xml.namespace.QName;
-import javax.xml.ws.BindingProvider;
-import javax.xml.ws.Holder;
-
-import org.apache.cxf.configuration.jsse.TLSClientParameters;
-import org.apache.cxf.endpoint.Client;
-import org.apache.cxf.frontend.ClientProxy;
-import org.apache.cxf.interceptor.LoggingOutInterceptor;
-import org.apache.cxf.transport.http.HTTPConduit;
-
-import com.mpay.soap.client.ClearingDetails;
-import com.mpay.soap.client.ETP;
-import com.mpay.soap.client.ETP_Service;
-import com.mpay.soap.client.HistoryEntry;
-import com.mpay.soap.client.Order;
-import com.mpay.soap.client.Parameter;
-import com.mpay.soap.client.PaymentProfile;
-import com.mpay.soap.client.PaymentType;
-import com.mpay.soap.client.Profile;
-import com.mpay.soap.client.SortField;
-import com.mpay.soap.client.SortType;
-import com.mpay.soap.client.Status;
-import com.mpay.soap.client.Transaction;
-import com.mpay.soap.client.TransactionDetails;
-import com.mpay24.payment.Mpay24.Environment;
-import com.mpay24.payment.PaymentException;
-import com.mpay24.payment.data.Address;
-import com.mpay24.payment.data.Customer;
-import com.mpay24.payment.data.Payment;
-import com.mpay24.payment.data.PaymentData;
-import com.mpay24.payment.data.Refund;
-import com.mpay24.payment.data.State;
-import com.mpay24.payment.data.Token;
-import com.mpay24.payment.data.TokenRequest;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 public class SoapCommunication {
 	public final static Logger logger = LogManager.getLogger(SoapCommunication.class);
+
+	ObjectFactory objectFactory = new ObjectFactory();
 
 	private static final String USERNAME_PREFIX = "u";
 	private final String merchantId;
@@ -74,7 +59,7 @@ public class SoapCommunication {
 		return getPaymentResponse(statusHolder, returnCodeHolder, errorNumberHolder, errorTextHolder, locationHolder, null, null, null);
 	}
 
-	public Payment acceptPayment(String transactionId, PaymentType paymenttype, com.mpay.soap.client.Payment payment, String customerId, String customerName,
+	public Payment acceptPayment(String transactionId, PaymentType paymenttype, com.mpay24.soap.Payment payment, String customerId, String customerName,
 					Order order, String successUrl, String errorUrl, String confirmationUrl) throws PaymentException {
 		Holder<Status> statusHolder = new Holder<Status>();
 		Holder<String> returnCodeHolder = new Holder<String>();
@@ -104,7 +89,7 @@ public class SoapCommunication {
 	}
 
 	private List<Payment> getPaymentHistory(Holder<Status> statusHolder, Holder<String> returnCodeHolder, Holder<List<HistoryEntry>> historyEntryHolder,
-					BigInteger mPayTid) {
+											BigInteger mPayTid) {
 		List<Payment> paymentList = new ArrayList<Payment>();
 		if (historyEntryHolder == null) {
 			return paymentList;
@@ -112,11 +97,15 @@ public class SoapCommunication {
 		for (HistoryEntry historyEntry : historyEntryHolder.value) {
 			Payment payment = new Payment();
 			payment.setAmount(getConvertedAmount(historyEntry.getAmount()));
-			payment.setApprovalCode(historyEntry.getApprovalCode());
-			payment.setErrorNumber(historyEntry.getErrNo());
-			payment.setErrorText(historyEntry.getErrText());
+			payment.setApprovalCode(String.valueOf(historyEntry.getApprovalCode()));
+			if (historyEntry.getErrNo() != null) {
+				payment.setErrorNumber(historyEntry.getErrNo().getValue());
+			}
+			payment.setErrorText(String.valueOf(historyEntry.getErrText()));
 			payment.setmPayTid(mPayTid);
-			payment.setParentStateID(historyEntry.getParentStateID());
+			if (historyEntry.getParentStateID() != null) {
+				payment.setParentStateID(historyEntry.getParentStateID().getValue());
+			}
 			payment.setProfileStatus(historyEntry.getProfileStatus());
 			payment.setStateID(historyEntry.getStateID());
 			payment.setTimeStamp(historyEntry.getTimeStamp().toGregorianCalendar().getTime());
@@ -172,7 +161,7 @@ public class SoapCommunication {
 		List<ClearingDetails> clearingDetailList = new ArrayList<ClearingDetails>();
 		ClearingDetails clearingDetail = new ClearingDetails();
 		clearingDetail.setMpayTID(payment.getmPayTid());
-		clearingDetail.setAmount(getConvertedAmount(payment.getAmount()));
+		clearingDetail.setAmount(objectFactory.createClearingDetailsAmount(getConvertedAmount(payment.getAmount())));
 		clearingDetailList.add(clearingDetail);
 		getSoapClientProxy().manualClear(getMerchantIdAsLong(), clearingDetailList, statusHolder, returnCodeHolder, transactionEntryHolder);
 		checkForError(statusHolder, returnCodeHolder);
@@ -217,8 +206,8 @@ public class SoapCommunication {
 		return getPaymentList(returnCodeHolder, transactionDetailsHolder);
 	}
 
-	public Payment createCustomer(String customerId, String customerName, com.mpay.soap.client.Address address, PaymentType pType,
-			com.mpay.soap.client.PaymentData paymentData, String tid, Order order, String successUrl, String errorUrl, String confirmationUrl, String language) throws PaymentException {
+	public Payment createCustomer(String customerId, String customerName, com.mpay24.soap.Address address, PaymentType pType,
+			com.mpay24.soap.PaymentData paymentData, String tid, Order order, String successUrl, String errorUrl, String confirmationUrl, String language) throws PaymentException {
 		Holder<Status> statusHolder = new Holder<Status>();
 		Holder<String> returnCodeHolder = new Holder<String>();
 		Holder<Integer> errorNumberHolder = new Holder<Integer>();
@@ -230,8 +219,8 @@ public class SoapCommunication {
 		checkForError(statusHolder, returnCodeHolder);
 		return getPaymentResponse(statusHolder, returnCodeHolder, errorNumberHolder, errorTextHolder, locationHolder, null, null, null);
 	}
-	public void createCustomer(String customerId, String customerName, com.mpay.soap.client.Address address, PaymentType pType,
-					com.mpay.soap.client.PaymentData paymentData) throws PaymentException {
+	public void createCustomer(String customerId, String customerName, com.mpay24.soap.Address address, PaymentType pType,
+					com.mpay24.soap.PaymentData paymentData) throws PaymentException {
 		Holder<Status> statusHolder = new Holder<Status>();
 		Holder<String> returnCodeHolder = new Holder<String>();
 		Holder<Integer> errorNumberHolder = new Holder<Integer>();
@@ -249,7 +238,7 @@ public class SoapCommunication {
 		Holder<String> returnCodeHolder = new Holder<String>();
 		Holder<List<Profile>> profileListHolder = new Holder<List<Profile>>();
 		Holder<Long> allHolder = new Holder<Long>();
-		getSoapClientProxy().listProfiles(getMerchantIdAsLong(), customerId, expiredBy, begin, size, statusHolder, returnCodeHolder, profileListHolder,
+		getSoapClientProxy().listProfiles(getMerchantIdAsLong(), customerId, CalendarConverter.asXMLGregorianCalendar(expiredBy), begin, size, statusHolder, returnCodeHolder, profileListHolder,
 						allHolder);
 		checkForError(statusHolder, returnCodeHolder);
 		return getProfileList(returnCodeHolder, profileListHolder);
@@ -287,12 +276,19 @@ public class SoapCommunication {
 	}
 
 	private void addPaymentProfileData(PaymentProfile pProfile, PaymentData storedPaymentData) {
-		storedPaymentData.setCustomer(getCustomerDetails(storedPaymentData.getCustomer(), pProfile.getAddress()));
-		storedPaymentData.getCustomer().setAddress(getAddress(pProfile.getAddress()));
-		storedPaymentData.setExpires(pProfile.getExpires());
+		if (pProfile.getAddress() != null) {
+			storedPaymentData.setCustomer(getCustomerDetails(storedPaymentData.getCustomer(), pProfile.getAddress().getValue()));
+			storedPaymentData.getCustomer().setAddress(getAddress(pProfile.getAddress().getValue()));
+		}
+		if (pProfile.getExpires() != null) {
+			storedPaymentData.setExpires(CalendarConverter.asDate(pProfile.getExpires().getValue()));
+		}
 		storedPaymentData.setIdentifier(pProfile.getIdentifier());
 		storedPaymentData.setLastUpdated(pProfile.getUpdated().toGregorianCalendar().getTime());
-		storedPaymentData.setPaymentType(com.mpay24.payment.data.PaymentType.fromId(pProfile.getPMethodID().intValue()));
+		if (pProfile.getPMethodID() != null) {
+			Integer methodId = pProfile.getPMethodID().getValue().intValue();
+			storedPaymentData.setPaymentType(com.mpay24.payment.data.PaymentType.fromId(methodId));
+		}
 		storedPaymentData.setProfileId(pProfile.getProfileID());
 	}
 
@@ -302,29 +298,31 @@ public class SoapCommunication {
 		return customer;
 	}
 
-	private Customer getCustomerDetails(Customer customer, com.mpay.soap.client.Address address) {
+	private Customer getCustomerDetails(Customer customer, com.mpay24.soap.Address address) {
 		if (address == null)
 			return customer;
 
-		customer.setBirthdate(address.getBirthday());
-		customer.setEmail(address.getEmail());
+		if (address.getBirthday() != null) {
+			customer.setBirthdate(CalendarConverter.asDate(address.getBirthday().getValue()));
+		}
+		customer.setEmail(String.valueOf(address.getEmail()));
 		if (address.getGender() != null) {
 			customer.setGender(com.mpay24.payment.data.Customer.Gender.getEnum(address.getGender().toString()));
 		}
 		customer.setName(address.getName());
-		customer.setPhoneNumber(address.getPhone());
+		customer.setPhoneNumber(String.valueOf(address.getPhone()));
 		return customer;
 	}
 
-	private Address getAddress(com.mpay.soap.client.Address soapAddress) {
+	private Address getAddress(com.mpay24.soap.Address soapAddress) {
 		if (soapAddress == null)
 			return null;
 		Address address = new Address();
 		address.setCity(soapAddress.getCity());
 		address.setCountryIso2(soapAddress.getCountryCode());
-		address.setState(soapAddress.getState());
+		address.setState(String.valueOf(soapAddress.getState()));
 		address.setStreet(soapAddress.getStreet());
-		address.setStreet2(soapAddress.getStreet2());
+		address.setStreet2(String.valueOf(soapAddress.getStreet2()));
 		address.setZip(soapAddress.getZip());
 		return address;
 	}
@@ -338,7 +336,9 @@ public class SoapCommunication {
 			payment.setmPayTid(txDetails.getMpayTID());
 			payment.setDescription(txDetails.getOrderDescription());
 			payment.setPaymentType(txDetails.getPType());
-			payment.setStateID(txDetails.getStateID());
+			if (txDetails.getStateID() != null) {
+				payment.setStateID(txDetails.getStateID().getValue());
+			}
 			payment.setTransactionId(txDetails.getTid());
 			payment.setState(State.valueOf(txDetails.getTStatus().toString()));
 			paymentList.add(payment);
@@ -359,7 +359,9 @@ public class SoapCommunication {
 		if (transactionEntryHolder != null && transactionEntryHolder.value.size() > 0) {
 			Transaction tx = transactionEntryHolder.value.get(0);
 			payment.setmPayTid(tx.getMpayTID());
-			payment.setStateID(tx.getStateID());
+			if (tx.getStateID() != null) {
+				payment.setStateID(tx.getStateID().getValue());
+			}
 			payment.setState(State.valueOf(tx.getTStatus().toString()));
 			payment.setTransactionId(tx.getTid());
 			payment.setReturnCode(returnCodeHolder.value);
@@ -373,7 +375,9 @@ public class SoapCommunication {
 		Refund refund = new Refund();
 		Transaction tx = transactionEntryHolder.value;
 		refund.setmPayTid(tx.getMpayTID());
-		refund.setStateID(tx.getStateID());
+		if (tx.getStateID() != null) {
+			refund.setStateID(tx.getStateID().getValue());
+		}
 		refund.setState(tx.getTStatus());
 		refund.setTransactionId(tx.getTid());
 		refund.setReturnCode(returnCodeHolder.value);
@@ -495,7 +499,7 @@ public class SoapCommunication {
 	}
 
 	private Payment getPaymentResponse(Holder<Status> statusHolder, Holder<String> returnCodeHolder, Holder<Integer> errorNumberHolder,
-					Holder<String> errorTextHolder, Holder<String> locationHolder, Holder<BigInteger> mPayTidHolder, com.mpay.soap.client.Payment payment,
+					Holder<String> errorTextHolder, Holder<String> locationHolder, Holder<BigInteger> mPayTidHolder, com.mpay24.soap.Payment payment,
 					Order order) throws PaymentException {
 		checkForError(statusHolder, errorNumberHolder, errorTextHolder, returnCodeHolder);
 		Payment paymentResponse = new Payment();

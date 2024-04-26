@@ -8,7 +8,7 @@ public class RecurringDirectDebitPaymentType extends PaymentTypeData {
     private Date dateOfSignature;
 
 	public RecurringDirectDebitPaymentType() {
-		super(com.mpay.soap.client.PaymentType.PROFILE);
+		super(com.mpay24.soap.PaymentType.PROFILE);
 	}
 
 	public String getMandateID() {

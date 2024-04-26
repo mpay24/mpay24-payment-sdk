@@ -1,6 +1,6 @@
 package com.mpay24.payment.data;
 
-import com.mpay.soap.client.PaymentType;
+import com.mpay24.soap.PaymentType;
 
 public class TokenRequest {
 	private PaymentType paymentType;

@@ -5,6 +5,7 @@ import static org.junit.Assert.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Optional;
 
 import org.junit.After;
 import org.junit.Before;
@@ -22,7 +23,7 @@ public class SdkApiObjectMapperTest {
 
 	@Test
 	public void testGetExpiredateAsLong() throws ParseException {
-		assertEquals(new Long(1604), new SdkApiObjectMapper().getExpiredateAsLong(getDate("04/2016")));
+		assertEquals(Long.valueOf(1604), new SdkApiObjectMapper().getExpiredateAsLong(getDate("04/2016")));
 	}
 
 	private Date getDate(String dateString) throws ParseException {

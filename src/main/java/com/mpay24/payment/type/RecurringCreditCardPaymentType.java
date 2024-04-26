@@ -5,7 +5,7 @@ public class RecurringCreditCardPaymentType extends PaymentTypeData {
     private boolean auth3DS = false;
 
 	public RecurringCreditCardPaymentType() {
-		super(com.mpay.soap.client.PaymentType.PROFILE);
+		super(com.mpay24.soap.PaymentType.PROFILE);
 	}
 
 	public String getCvc() {

@@ -6,7 +6,6 @@ import static org.junit.Assert.fail;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.Duration;
 import java.util.Date;
 import java.util.List;
 
@@ -89,7 +88,7 @@ public class TestRecurringPayments extends AbstractSeleniumTestcase {
 	private void doCreditCardPaymentOnPaymentPanel(Payment response) {
 		RemoteWebDriver driver = openFirefoxAtUrl(response.getRedirectLocation());
 		driver.findElement(By.name("selCC|VISA")).click();
-		WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
+		WebDriverWait wait = new WebDriverWait(driver, 20);
 		wait.until(ExpectedConditions.elementToBeClickable(By.id("cardnumber")));
 		
 		driver.findElement(By.id("cardnumber")).sendKeys("4444333322221111");

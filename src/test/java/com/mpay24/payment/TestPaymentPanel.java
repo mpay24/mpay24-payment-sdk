@@ -174,7 +174,7 @@ public class TestPaymentPanel extends AbstractSeleniumTestcase {
 		assertSuccessfullResponse(response);
 		
 		RemoteWebDriver driver = openFirefoxAtUrl(response.getRedirectLocation());
-		assertEquals("/app/checkout/css/DEFAULT/DEFAULT.css?v3", removeDomain(driver.findElement(By.xpath("//head/link[@rel='stylesheet']")).getAttribute("href")));
+		assertEquals("/app/checkout/css/DEFAULT/DEFAULT.css?v4", removeDomain(driver.findElement(By.xpath("//head/link[@rel='stylesheet']")).getAttribute("href")));
 	}
 
 	@Test
@@ -183,7 +183,7 @@ public class TestPaymentPanel extends AbstractSeleniumTestcase {
 		assertSuccessfullResponse(response);
 		
 		RemoteWebDriver driver = openFirefoxAtUrl(response.getRedirectLocation());
-		assertEquals("/app/checkout/css/DEFAULT/DEFAULT.css?v3", removeDomain(driver.findElement(By.xpath("//head/link[@rel='stylesheet']")).getAttribute("href")));
+		assertEquals("/app/checkout/css/DEFAULT/DEFAULT.css?v4", removeDomain(driver.findElement(By.xpath("//head/link[@rel='stylesheet']")).getAttribute("href")));
 	}
 	
 	@Test
@@ -198,7 +198,7 @@ public class TestPaymentPanel extends AbstractSeleniumTestcase {
 		
 		RemoteWebDriver driver = openFirefoxAtUrl(response.getRedirectLocation());
 		driver.findElement(By.name("selCC|VISA")).click();
-		WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
+		WebDriverWait wait = new WebDriverWait(driver, 20);
 		wait.until(ExpectedConditions.elementToBeClickable(By.id("cardnumber"))); 
 		assertEquals("Testperson-de Approved", driver.findElement(By.name("BillingAddr/Name")).getAttribute("value"));
 		assertEquals("Hellersbergstraße 14", driver.findElement(By.name("BillingAddr/Street")).getAttribute("value"));
@@ -216,7 +216,7 @@ public class TestPaymentPanel extends AbstractSeleniumTestcase {
 		
 		RemoteWebDriver driver = openFirefoxAtUrl(response.getRedirectLocation());
 		driver.findElement(By.name("selPAYPAL|PAYPAL")).click();
-		WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
+		WebDriverWait wait = new WebDriverWait(driver, 20);
 		wait.until(ExpectedConditions.elementToBeClickable(By.name("BillingAddr/Street"))); 
 		assertEquals("Testperson-de Approved", driver.findElement(By.name("BillingAddr/Name")).getAttribute("value"));
 		assertEquals("Hellersbergstraße 14", driver.findElement(By.name("BillingAddr/Street")).getAttribute("value"));

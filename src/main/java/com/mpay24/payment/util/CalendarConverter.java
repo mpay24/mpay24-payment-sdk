@@ -1,9 +1,9 @@
-package com.mpay24.payment.mapper;
+package com.mpay24.payment.util;
 
-import java.util.GregorianCalendar;
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
+import java.util.GregorianCalendar;
 
 public class CalendarConverter {
 
@@ -22,7 +22,7 @@ public class CalendarConverter {
             return null;
         } else {
             GregorianCalendar gc = new GregorianCalendar();
-            gc.setTimeInMillis(date.getTime());
+            gc.setTime(date);
             return df.newXMLGregorianCalendar(gc);
         }
     }

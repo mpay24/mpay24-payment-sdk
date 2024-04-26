@@ -1,6 +1,6 @@
 package com.mpay24.payment;
 
-import com.mpay.soap.client.Status;
+import com.mpay24.soap.Status;
 
 public class PaymentException extends Exception {
 	private static final long serialVersionUID = -8356132170233002179L;

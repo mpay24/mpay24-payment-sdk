@@ -1,48 +1,18 @@
 package com.mpay24.payment.mapper;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
-import com.mpay.soap.client.Address;
-import com.mpay.soap.client.AddressMode;
-import com.mpay.soap.client.Gender;
-import com.mpay.soap.client.Item;
-import com.mpay.soap.client.ObjectFactory;
-import com.mpay.soap.client.Order;
-import com.mpay.soap.client.Payment;
-import com.mpay.soap.client.PaymentBILLPAY;
-import com.mpay.soap.client.PaymentCC;
-import com.mpay.soap.client.PaymentData;
-import com.mpay.soap.client.PaymentDataCC;
-import com.mpay.soap.client.PaymentDataELV;
-import com.mpay.soap.client.PaymentDataTOKEN;
-import com.mpay.soap.client.PaymentELV;
-import com.mpay.soap.client.PaymentEPS;
-import com.mpay.soap.client.PaymentGIROPAY;
-import com.mpay.soap.client.PaymentKLARNA;
-import com.mpay.soap.client.PaymentMAESTRO;
-import com.mpay.soap.client.PaymentPAYPAL;
-import com.mpay.soap.client.PaymentTOKEN;
-import com.mpay.soap.client.PaymentType;
 import com.mpay24.payment.data.Customer;
 import com.mpay24.payment.data.PaymentRequest;
 import com.mpay24.payment.data.ShoppingCart;
 import com.mpay24.payment.data.ShoppingCartItem;
-import com.mpay24.payment.type.CreditCardPaymentType;
-import com.mpay24.payment.type.DebitCardPaymentType;
-import com.mpay24.payment.type.DirectDebitPaymentType;
-import com.mpay24.payment.type.InvoicePaymentType;
+import com.mpay24.payment.type.*;
 import com.mpay24.payment.type.InvoicePaymentType.Brand;
-import com.mpay24.payment.type.OnlineBankingPaymentType;
-import com.mpay24.payment.type.PaymentTypeData;
-import com.mpay24.payment.type.PaypalPaymentType;
-import com.mpay24.payment.type.PaysafecardPaymentType;
-import com.mpay24.payment.type.QuickPaymentType;
-import com.mpay24.payment.type.RecurringCreditCardPaymentType;
-import com.mpay24.payment.type.RecurringDirectDebitPaymentType;
-import com.mpay24.payment.type.TokenPaymentType;
+import com.mpay24.payment.util.CalendarConverter;
+import com.mpay24.soap.*;
+
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class SdkApiObjectMapper {
 
@@ -152,10 +122,10 @@ public class SdkApiObjectMapper {
 		return order;
 	}
 
-	private com.mpay.soap.client.ShoppingCart mapShoppingCart(ShoppingCart shoppingCart) {
+	private com.mpay24.soap.ShoppingCart mapShoppingCart(ShoppingCart shoppingCart) {
 		if (shoppingCart == null)
 			return null;
-		com.mpay.soap.client.ShoppingCart soapShoppingCart = new com.mpay.soap.client.ShoppingCart();
+		com.mpay24.soap.ShoppingCart soapShoppingCart = new com.mpay24.soap.ShoppingCart();
 		soapShoppingCart.setDiscount(objectFactory.createShoppingCartDiscount(convertBigDecimalToInteger(shoppingCart.getDiscount())));
 		soapShoppingCart.setShippingCosts(objectFactory.createShoppingCartShippingCosts(convertBigDecimalToInteger(shoppingCart.getShippingCost())));
 		soapShoppingCart.setShippingTax(objectFactory.createShoppingCartShippingTax(convertBigDecimalToInteger(shoppingCart.getShippingCostTax())));
